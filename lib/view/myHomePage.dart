@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'aboutPage.dart';
-import 'settingPage.dart';
+import 'package:score_counter/view/testListPage.dart';
+import 'package:score_counter/view/settingPage.dart';
+import 'package:score_counter/view/createPage.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -11,11 +12,11 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('HomePage'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(8),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          HomePagePush(context, '新規作成', const AboutPage()),
-          HomePagePush(context, '採点リスト', const AboutPage()),
+          HomePagePush(context, '新規作成', const CreatePage()),
+          HomePagePush(context, '採点リスト', const TestListPage()),
           HomePagePush(context, '設定', const SettingPage()),
         ],
       ),
