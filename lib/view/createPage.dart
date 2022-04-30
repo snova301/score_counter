@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:score_counter/main.dart';
+import 'package:score_counter/model/runClass.dart';
 import 'package:score_counter/view/questionSetPage.dart';
 
 class CreatePage extends ConsumerWidget {
@@ -18,22 +19,9 @@ class CreatePage extends ConsumerWidget {
         padding: const EdgeInsets.all(30),
         children: <Widget>[
           _TextFieldContainer(context, ref, textController),
+          _NextButton(context, ref, textController),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          textController.text == ''
-              ? null
-              : Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const QuestionSetPage()),
-                );
-        },
-        tooltip: '次のページ',
-        label: const Text('次へ'),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
@@ -44,4 +32,56 @@ class _TextFieldContainer extends Container {
             child: TextField(
           controller: _controller,
         ));
+}
+
+class _NextButton extends Align {
+  _NextButton(
+      BuildContext context, WidgetRef ref, TextEditingController _controller)
+      : super(
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            margin: const EdgeInsets.all(20),
+            child: ElevatedButton(
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                margin: const EdgeInsets.all(6),
+                child: const Text('次  へ'),
+              ),
+              onPressed: () {
+                // テスト名が空欄の場合や重複の場合にAlertを出力
+                (_controller.text == '' || RunClass().isTestNameDuplicate(ref))
+                    ? showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return _NextButtonDialog(context, ref);
+                        },
+                      )
+                    : {
+                        RunClass().createSelectTestName(ref),
+                        ref.read(isUpdateQuestionProvider.state).state = false,
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const QuestionSetPage(),
+                          ),
+                        ),
+                      };
+              },
+            ),
+          ),
+        );
+}
+
+class _NextButtonDialog extends AlertDialog {
+  _NextButtonDialog(BuildContext context, WidgetRef ref)
+      : super(
+          title: const Text('注意'),
+          content: const Text('テスト名が空欄または重複しています。\n入力内容を確認してください。'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'),
+            ),
+          ],
+        );
 }

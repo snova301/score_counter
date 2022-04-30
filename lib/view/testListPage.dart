@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:score_counter/main.dart';
+import 'package:score_counter/model/runClass.dart';
+import 'package:score_counter/view/MemberSetPage.dart';
+import 'package:score_counter/view/myHomePage.dart';
+import 'package:score_counter/view/questionSetPage.dart';
 
 class TestListPage extends ConsumerWidget {
   const TestListPage({Key? key}) : super(key: key);
@@ -13,10 +17,10 @@ class TestListPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('テストリスト'),
       ),
+      drawer: DrawerMenu(context),
       body: Column(
         children: [
-          const Text("👇ここからリスト👇"),
-          _InfoCard(context, ref, '問題数'),
+          InfoCard(context, ref, 'テスト数', _testList.length.toString()),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(8),
@@ -32,38 +36,72 @@ class TestListPage extends ConsumerWidget {
   }
 }
 
-class _InfoCard extends Card {
-  _InfoCard(BuildContext context, WidgetRef ref, String title)
+class _QuestionCard extends Card {
+  _QuestionCard(BuildContext context, WidgetRef ref, List _testList, int _index)
       : super(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Text(title),
-                Text('タップすると、' + title + 'webページへ移動します。'),
-              ],
-            ),
+          child: ListTile(
+            title: Text(_testList[_index]),
+            subtitle: Text(_testList[_index] + _index.toString()),
+            onTap: () {
+              ref.read(selectTestNameProvider.state).state = _testList[_index];
+              ref.read(isMemberSetModeProvider.state).state = false;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MemberSetPage(),
+                ),
+              );
+            },
+            trailing: _QuestionCardPopup(context, ref, _testList, _index),
           ),
         );
 }
 
-class _QuestionCard extends Card {
-  _QuestionCard(
-    BuildContext context,
-    WidgetRef ref,
-    List _testList,
-    int index,
-  ) : super(
-          child: ListTile(
-            title: Text(_testList[index]),
-            subtitle: Text(_testList[index] + index.toString()),
-            // onLongPress: () {
-            //   _testList.removeAt(index);
-            //   ref.read(questionListProvider.state).state = [..._testList];
-            // },
-            trailing: const Icon(Icons.open_in_browser),
-          ),
+class _QuestionCardPopup extends PopupMenuButton<int> {
+  _QuestionCardPopup(
+      BuildContext context, WidgetRef ref, List _testList, int _index)
+      : super(
+          icon: const Icon(Icons.more_vert),
+          itemBuilder: (BuildContext context) => [
+            PopupMenuItem(
+              value: 0,
+              child: Row(
+                children: const <Widget>[
+                  Icon(Icons.note_alt_outlined),
+                  Text(' 設問設定'),
+                ],
+              ),
+            ),
+            const PopupMenuDivider(),
+            PopupMenuItem(
+              value: 1,
+              child: Row(
+                children: const <Widget>[
+                  Icon(
+                    Icons.delete_outline,
+                    color: Colors.red,
+                  ),
+                  Text(
+                    ' テストを削除',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          onSelected: (int val) {
+            if (val == 0) {
+              ref.read(selectTestNameProvider.state).state = _testList[_index];
+              ref.read(isUpdateQuestionProvider.state).state = true;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const QuestionSetPage(),
+                ),
+              );
+            } else if (val == 1) {
+              RunClass().removeTestListCard(ref, _testList, _index);
+            }
+          },
         );
 }

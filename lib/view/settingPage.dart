@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:score_counter/model/runClass.dart';
+import 'package:score_counter/model/stateManager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '/main.dart';
 
@@ -33,6 +35,7 @@ class _DarkmodeCard extends Card {
             value: ref.watch(darkmodeProvider),
             onChanged: (bool value) {
               ref.read(darkmodeProvider.state).state = value;
+              StateManagerClass().setDarkmodeVal(ref);
             },
             secondary: const Icon(Icons.lightbulb_outline),
           ),
