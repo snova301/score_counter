@@ -20,7 +20,7 @@ class StateManagerClass {
   });
 
   /// initiallize provider for list
-  final testListStateProvider = StateProvider((ref) => ['asd']);
+  final testListStateProvider = StateProvider((ref) => []);
   final questionListStateProvider = StateProvider((ref) => []);
   final memberListStateProvider = StateProvider((ref) => []);
   final pointListStateProvider = StateProvider((ref) => []);

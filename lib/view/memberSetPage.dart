@@ -14,6 +14,7 @@ class MemberSetPage extends ConsumerStatefulWidget {
 }
 
 class MemberSetPageState extends ConsumerState<MemberSetPage> {
+  /// 前回までのリストをクリアし、重複を防ぐ
   @override
   void initState() {
     super.initState();
@@ -30,6 +31,7 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
       ),
       body: Column(
         children: [
+          const Text('メンバーは50人まで設定できます。'),
           InfoCard(context, ref, '人数', _memberList.length.toString()),
           Expanded(
             child: ListView.builder(
@@ -61,8 +63,10 @@ class _MemberCard extends Card {
       : super(
           child: ListTile(
             title: Text(_memberList[_index]),
-            // subtitle: const Text('得点 / 配点 = 80 / 100'),
-            // trailing: const Icon(Icons.all_inclusive_outlined),
+            contentPadding: const EdgeInsets.all(8),
+            trailing: ref.watch(isMemberSetModeProvider)
+                ? _MemberCardPopup(context, ref, _memberList, _index)
+                : null,
             onTap: () {
               ref.watch(isMemberSetModeProvider)
                   ? null // Set Mode
@@ -79,13 +83,37 @@ class _MemberCard extends Card {
                           builder: (context) => const ScoreSetPage()),
                     ); // Select Mode
             },
-            onLongPress: () {
-              ref.watch(isMemberSetModeProvider)
-                  ? RunClass()
-                      .removeMember(ref, _memberList, _index) // Set Mode
-                  : null; // Select Mode
-            },
           ),
+        );
+}
+
+class _MemberCardPopup extends PopupMenuButton<int> {
+  _MemberCardPopup(
+      BuildContext context, WidgetRef ref, List _memberList, int _index)
+      : super(
+          icon: const Icon(Icons.more_vert),
+          itemBuilder: (BuildContext context) => [
+            PopupMenuItem(
+              value: 0,
+              child: Row(
+                children: const <Widget>[
+                  Icon(
+                    Icons.delete_outline,
+                    color: Colors.red,
+                  ),
+                  Text(
+                    ' メンバーを削除',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          onSelected: (int val) {
+            if (val == 0) {
+              RunClass().removeMember(ref, _memberList, _index);
+            }
+          },
         );
 }
 
@@ -97,8 +125,11 @@ class _BackButton extends Align {
                   padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.all(10),
                   child: ElevatedButton(
-                    child: const Text('テストリスト一覧へ'),
+                    child: const Text('保存してテストリスト一覧へ'),
                     onPressed: () {
+                      ref.read(isUpdateQuestionProvider)
+                          ? null
+                          : RunClass().addClearTestName(ref);
                       Navigator.push(
                         context,
                         MaterialPageRoute(

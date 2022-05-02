@@ -9,7 +9,7 @@ class RunClass {
   }
 
   /// QuestionSetPageの保存ボタンの動作
-  void questionSetRun(WidgetRef ref) {
+  void addClearTestName(WidgetRef ref) {
     ref.read(testListProvider).add(ref.read(testNameControllerProvider).text);
     ref.read(testNameControllerProvider).clear();
   }
@@ -19,7 +19,7 @@ class RunClass {
   bool isTestNameDuplicate(WidgetRef ref) {
     return ref
         .read(testListProvider)
-        .contains(ref.read(testNameControllerProvider));
+        .contains(ref.read(testNameControllerProvider).text);
   }
 
   /// QuestionSetPageでメンバーが重複していないか確認。
@@ -27,7 +27,7 @@ class RunClass {
   bool isQuestionDuplicate(WidgetRef ref) {
     return ref
         .read(testListProvider)
-        .contains(ref.read(testNameControllerProvider));
+        .contains(ref.read(testNameControllerProvider).text);
   }
 
   /// MemberSetPageでメンバーが重複していないか確認。
@@ -35,7 +35,7 @@ class RunClass {
   bool isMemberDuplicate(WidgetRef ref) {
     return ref
         .read(testListProvider)
-        .contains(ref.read(testNameControllerProvider));
+        .contains(ref.read(testNameControllerProvider).text);
   }
 
   /// ScoreSetPageで採点実施
@@ -59,17 +59,18 @@ class RunClass {
     ref.read(scoreListProvider)[_index] = _answer;
     ref.read(scoreListProvider.state).state = [...ref.read(scoreListProvider)];
 
-    _testDataStore.forEach((val) {
-      print(val.testname +
-          ' / ' +
-          val.question +
-          ' / ' +
-          val.member +
-          ' / ' +
-          val.score.toString());
-    });
+    // _testDataStore.forEach((val) {
+    //   print(val.testname +
+    //       ' / ' +
+    //       val.question +
+    //       ' / ' +
+    //       val.member +
+    //       ' / ' +
+    //       val.score.toString());
+    // });
   }
 
+  /// QuestionSetPageで配点の合計を計算
   String sumPoint(WidgetRef ref) {
     final _pointList = ref.watch(pointListProvider);
 
@@ -107,7 +108,6 @@ class RunClass {
     if (_sumCountList.isNotEmpty) {
       _correctPoint = _sumCountList.reduce((val, ele) => val + ele);
     }
-    print(_correctPoint);
 
     /// 合計点
     final _totalPoint = _pointList.reduce((val, ele) => val + ele);
@@ -126,70 +126,77 @@ class RunClass {
     final _questionList = ref.read(questionListProvider);
     final _pointList = ref.read(pointListProvider);
 
-    /// 表示用設問リストへの追加
-    /// _questionListがemptyなら'QUESTION - 1'を書き込む
-    /// elseなら、番号が小さい順に設問を確認し、リストに追加
-    String _newQuestionName = 'QUESTION - 1';
-    int _newPoint = 2;
-    if (_questionList.isEmpty) {
-      _questionList.add(_newQuestionName);
-      _pointList.add(_newPoint);
-    } else {
-      for (int _i = 1; _i <= 100; _i++) {
-        String _newQuestionName = 'QUESTION - ' + _i.toString();
-        if (!_questionList.contains(_newQuestionName)) {
-          _questionList.add(_newQuestionName);
-          _pointList.add(_newPoint);
-          break;
+    /// 設問リストは100問まで
+    if (_questionList.length < 100) {
+      /// 表示用設問リストへの追加
+      /// _questionListがemptyなら'QUESTION - 1'を書き込む
+      /// elseなら、番号が小さい順に設問を確認し、リストに追加
+      String _newQuestionName = 'QUESTION - 1';
+      int _newPoint = 2;
+      if (_questionList.isEmpty) {
+        _questionList.add(_newQuestionName);
+        _pointList.add(_newPoint);
+      } else {
+        for (int _i = 1; _i <= 100; _i++) {
+          String _newQuestionName = 'QUESTION - ' + _i.toString();
+          if (!_questionList.contains(_newQuestionName)) {
+            _questionList.add(_newQuestionName);
+            _pointList.add(_newPoint);
+            break;
+          }
         }
       }
-    }
 
-    /// 表示用リストの更新
-    ref.read(questionListProvider.state).state = [..._questionList];
-    ref.read(pointListProvider.state).state = [..._pointList];
+      /// 表示用リストの更新
+      ref.read(questionListProvider.state).state = [..._questionList];
+      ref.read(pointListProvider.state).state = [..._pointList];
+    }
   }
 
   /// MemberSetPageでメンバーを追加
   /// メンバー追加でデータモデルを構築
+  /// _memberListのデータがおかしいので要注意
   void addMember(WidgetRef ref) {
     /// 読込
     final _memberList = ref.read(memberListProvider);
 
-    /// 表示用設問リストへの追加
-    /// _memberListがemptyなら'MEMBER - 1'を書き込む
-    /// elseなら、番号が小さい順に設問を確認し、リストに追加
-    String _memberName = 'MEMBER - 1';
-    if (_memberList.isEmpty) {
-      _memberList.add(_memberName);
-    } else {
-      for (int _i = 1; _i <= 100; _i++) {
-        String _newMemberName = 'MEMBER - ' + _i.toString();
-        if (!_memberList.contains(_newMemberName)) {
-          _memberList.add(_newMemberName);
-          _memberName = _newMemberName;
-          break;
+    /// メンバーは50人まで設定可能
+    if (_memberList.toSet().toList().length < 50) {
+      /// 表示用設問リストへの追加
+      /// _memberListがemptyなら'MEMBER - 1'を書き込む
+      /// elseなら、番号が小さい順に設問を確認し、リストに追加
+      String _memberName = 'MEMBER - 1';
+      if (_memberList.isEmpty) {
+        _memberList.add(_memberName);
+      } else {
+        for (int _i = 1; _i <= 100; _i++) {
+          String _newMemberName = 'MEMBER - ' + _i.toString();
+          if (!_memberList.contains(_newMemberName)) {
+            _memberList.add(_newMemberName);
+            _memberName = _newMemberName;
+            break;
+          }
         }
       }
-    }
 
-    /// 表示用メンバーリストへ追加
-    ref.read(memberListProvider.state).state = [..._memberList];
+      /// 表示用メンバーリストへ追加
+      ref.read(memberListProvider.state).state = [..._memberList];
 
-    /// データモデルへの追加
-    final _testDataStore = ref.read(testDataStoreProvider);
-    final _selectTestName = ref.read(selectTestNameProvider);
-    final _questionList = ref.read(questionListProvider).toSet().toList();
-    final _pointList = ref.read(pointListProvider);
+      /// データモデルへの追加
+      final _testDataStore = ref.read(testDataStoreProvider);
+      final _selectTestName = ref.read(selectTestNameProvider);
+      final _questionList = ref.read(questionListProvider).toSet().toList();
+      final _pointList = ref.read(pointListProvider);
 
-    for (var _i = 0; _i < _questionList.length; _i++) {
-      _testDataStore.add(TestDataModel(
-        _selectTestName,
-        _questionList[_i],
-        _memberName,
-        _pointList[_i],
-        false,
-      ));
+      for (var _i = 0; _i < _questionList.length; _i++) {
+        _testDataStore.add(TestDataModel(
+          _selectTestName,
+          _questionList[_i],
+          _memberName,
+          _pointList[_i],
+          false,
+        ));
+      }
     }
   }
 
@@ -199,45 +206,48 @@ class RunClass {
     final _questionList = ref.read(questionListProvider);
     final _pointList = ref.read(pointListProvider);
 
-    /// 表示用設問リストへの追加
-    String _newQuestionName = '';
-    int _newPoint = 2;
-    if (_questionList.isEmpty) {
-      _questionList.add('QUESTION - 1');
-      _pointList.add(_newPoint);
-    } else {
-      for (int _i = 1; _i <= 100; _i++) {
-        _newQuestionName = 'QUESTION - ' + _i.toString();
-        if (!_questionList.contains(_newQuestionName)) {
-          _questionList.add(_newQuestionName);
-          _pointList.add(_newPoint);
-          break;
+    /// 設問リストは100問まで
+    if (_questionList.length < 100) {
+      /// 表示用設問リストへの追加
+      String _newQuestionName = '';
+      int _newPoint = 2;
+      if (_questionList.isEmpty) {
+        _questionList.add('QUESTION - 1');
+        _pointList.add(_newPoint);
+      } else {
+        for (int _i = 1; _i <= 100; _i++) {
+          _newQuestionName = 'QUESTION - ' + _i.toString();
+          if (!_questionList.contains(_newQuestionName)) {
+            _questionList.add(_newQuestionName);
+            _pointList.add(_newPoint);
+            break;
+          }
         }
       }
-    }
 
-    /// 表示用リストの更新
-    ref.read(questionListProvider.state).state = [..._questionList];
-    ref.read(pointListProvider.state).state = [..._pointList];
+      /// 表示用リストの更新
+      ref.read(questionListProvider.state).state = [..._questionList];
+      ref.read(pointListProvider.state).state = [..._pointList];
 
-    /// データ追加
-    /// 読込
-    final _selectTestName = ref.read(selectTestNameProvider);
-    final _testDataStore = ref.read(testDataStoreProvider);
+      /// データ追加
+      /// 読込
+      final _selectTestName = ref.read(selectTestNameProvider);
+      final _testDataStore = ref.read(testDataStoreProvider);
 
-    /// データ確認
-    List _memberList = [];
-    _testDataStore.forEach((_val) {
-      if (_val.testname == _selectTestName) {
-        _memberList.add(_val.member);
+      /// データ確認
+      List _memberList = [];
+      _testDataStore.forEach((_val) {
+        if (_val.testname == _selectTestName) {
+          _memberList.add(_val.member);
+        }
+      });
+
+      /// 重複確認とデータ追加
+      _memberList = _memberList.toSet().toList();
+      for (var _member in _memberList) {
+        _testDataStore.add(TestDataModel(
+            _selectTestName, _newQuestionName, _member, _newPoint, false));
       }
-    });
-
-    /// 重複確認とデータ追加
-    _memberList = _memberList.toSet().toList();
-    for (var _member in _memberList) {
-      _testDataStore.add(TestDataModel(
-          _selectTestName, _newQuestionName, _member, _newPoint, false));
     }
   }
 
@@ -343,11 +353,13 @@ class InitListClass {
     /// データ読込
     final List<TestDataModel> _testDataStore = ref.watch(testDataStoreProvider);
     final _questionList = ref.watch(questionListProvider);
+    final _pointList = ref.watch(pointListProvider);
 
     /// 選別
     _testDataStore.forEach((_val) {
       if (_val.testname == ref.watch(selectTestNameProvider)) {
         _questionList.add(_val.question);
+        _pointList.add(_val.point);
       }
     });
 

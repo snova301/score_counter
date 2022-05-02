@@ -23,7 +23,7 @@ class TestListPage extends ConsumerWidget {
           InfoCard(context, ref, 'テスト数', _testList.length.toString()),
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               itemCount: _testList.length,
               itemBuilder: (context, index) {
                 return _QuestionCard(context, ref, _testList, index);
@@ -41,7 +41,8 @@ class _QuestionCard extends Card {
       : super(
           child: ListTile(
             title: Text(_testList[_index]),
-            subtitle: Text(_testList[_index] + _index.toString()),
+            contentPadding: const EdgeInsets.all(8),
+            // subtitle: Text(_testList[_index] + _index.toString()),
             onTap: () {
               ref.read(selectTestNameProvider.state).state = _testList[_index];
               ref.read(isMemberSetModeProvider.state).state = false;

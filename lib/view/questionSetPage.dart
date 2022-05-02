@@ -13,10 +13,12 @@ class QuestionSetPage extends ConsumerStatefulWidget {
 }
 
 class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
+  /// 前回までのリストをクリアし、重複を防ぐ
   @override
   void initState() {
     super.initState();
     ref.read(questionListProvider).clear();
+    ref.read(pointListProvider).clear();
   }
 
   @override
@@ -30,7 +32,7 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
       drawer: DrawerMenu(context),
       body: Column(
         children: [
-          const Text("👇ここからリスト👇"),
+          const Text('設問は100問まで設定できます。'),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -69,14 +71,42 @@ class _QuestionCard extends Card {
       : super(
           child: ListTile(
             title: Text(_questionList[_index]),
-            subtitle: Text(_questionList[_index]),
-            trailing: const Icon(Icons.open_in_browser),
-            onLongPress: () {
+            contentPadding: const EdgeInsets.all(8),
+            // subtitle: Text(_questionList[_index]),
+            trailing: _QuestionCardPopup(context, ref, _questionList, _index),
+          ),
+        );
+}
+
+class _QuestionCardPopup extends PopupMenuButton<int> {
+  _QuestionCardPopup(
+      BuildContext context, WidgetRef ref, List _questionList, int _index)
+      : super(
+          icon: const Icon(Icons.more_vert),
+          itemBuilder: (BuildContext context) => [
+            PopupMenuItem(
+              value: 0,
+              child: Row(
+                children: const <Widget>[
+                  Icon(
+                    Icons.delete_outline,
+                    color: Colors.red,
+                  ),
+                  Text(
+                    ' 設問を削除',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          onSelected: (int val) {
+            if (val == 0) {
               ref.read(isUpdateQuestionProvider)
                   ? RunClass().updateRemoveQuestion(ref, _questionList, _index)
                   : RunClass().removeQuestion(ref, _questionList, _index);
-            },
-          ),
+            }
+          },
         );
 }
 
@@ -87,12 +117,11 @@ class _SaveButton extends Align {
             padding: const EdgeInsets.all(10),
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
-              child: const Text('メンバー設定へ'),
+              child: ref.read(isUpdateQuestionProvider)
+                  ? const Text('保存してメンバー設定へ')
+                  : const Text('メンバー設定へ'),
               onPressed: () {
                 ref.read(isMemberSetModeProvider.state).state = true;
-                ref.read(isUpdateQuestionProvider)
-                    ? null
-                    : RunClass().questionSetRun(ref);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

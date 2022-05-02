@@ -20,7 +20,6 @@ class ScoreSetPage extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          const Text("👇ここからリスト👇"),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
