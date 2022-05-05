@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:score_counter/main.dart';
+import 'package:score_counter/model/runClass.dart';
+import 'package:score_counter/model/stateManager.dart';
 import 'package:score_counter/view/testListPage.dart';
 import 'package:score_counter/view/settingPage.dart';
-import 'package:score_counter/view/createPage.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
+  @override
+  MyHomePageState createState() => MyHomePageState();
+}
+
+class MyHomePageState extends ConsumerState<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomePage'),
+        title: const Text('採点カウンター SCCO'),
       ),
       drawer: DrawerMenu(context),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          HomePagePush(context, '新規作成', const CreatePage()),
           HomePagePush(context, '採点リスト', const TestListPage()),
           HomePagePush(context, '設定', const SettingPage()),
         ],
@@ -65,6 +70,17 @@ class DrawerMenu extends Drawer {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const MyHomePage(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text('テストリスト'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TestListPage(),
                     ),
                   );
                 },

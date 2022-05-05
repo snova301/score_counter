@@ -24,14 +24,17 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
   @override
   Widget build(BuildContext context) {
     final _memberList = InitListClass().mSelectMList(ref);
+    final _maxNumOfMember = 50;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('メンバー設定'),
+        title: ref.watch(isMemberSetModeProvider)
+            ? const Text('メンバー設定')
+            : const Text('メンバー選択'),
       ),
       body: Column(
         children: [
-          const Text('メンバーは50人まで設定できます。'),
+          Text('メンバーは' + _maxNumOfMember.toString() + '人まで設定できます。'),
           InfoCard(context, ref, '人数', _memberList.length.toString()),
           Expanded(
             child: ListView.builder(
@@ -48,7 +51,7 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
       floatingActionButton: ref.watch(isMemberSetModeProvider)
           ? FloatingActionButton(
               onPressed: () {
-                RunClass().addMember(ref);
+                RunClass().addMember(ref, _maxNumOfMember);
               },
               tooltip: 'メンバー追加',
               child: const Icon(Icons.add),

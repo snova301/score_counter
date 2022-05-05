@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:score_counter/model/runClass.dart';
 import 'package:score_counter/model/stateManager.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:score_counter/view/aboutPage.dart';
 import '/main.dart';
 
 class SettingPage extends ConsumerWidget {
@@ -15,12 +14,11 @@ class SettingPage extends ConsumerWidget {
         title: const Text("設定"),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.all(10),
         children: <Widget>[
           _DarkmodeCard(context, ref),
-          _LinkCard(context, '使い方', 'https://snova301.hatenablog.com/'),
-          _LinkCard(context, '利用規約', 'https://snova301.hatenablog.com/'),
-          _LinkCard(context, 'プライバイシーポリシー', 'https://snova301.hatenablog.com/'),
+          _CacheClearCard(context, ref),
+          _toAboutPage(context, ref),
         ],
       ),
     );
@@ -28,33 +26,52 @@ class SettingPage extends ConsumerWidget {
 }
 
 class _DarkmodeCard extends Card {
-  _DarkmodeCard(BuildContext context, ref)
+  _DarkmodeCard(BuildContext context, WidgetRef ref)
       : super(
           child: SwitchListTile(
             title: const Text('ダークモード'),
             value: ref.watch(darkmodeProvider),
+            contentPadding: EdgeInsets.all(10),
+            secondary: const Icon(Icons.dark_mode_outlined),
             onChanged: (bool value) {
               ref.read(darkmodeProvider.state).state = value;
               StateManagerClass().setDarkmodeVal(ref);
             },
-            secondary: const Icon(Icons.lightbulb_outline),
           ),
         );
 }
 
-class _LinkCard extends Card {
-  _LinkCard(BuildContext context, urlTitle, urlName)
+class _CacheClearCard extends Card {
+  _CacheClearCard(BuildContext context, WidgetRef ref)
       : super(
           child: ListTile(
-            title: Text(urlTitle),
-            subtitle: Text('タップすると、' + urlTitle + 'のwebページへ移動します。'),
-            onTap: () => _launchUrl(urlName),
-            trailing: const Icon(Icons.open_in_browser),
+            title: const Text('採点データを削除'),
+            textColor: Colors.red,
+            iconColor: Colors.red,
+            contentPadding: EdgeInsets.all(10),
+            leading: const Icon(Icons.delete_outline),
+            onTap: () {
+              /// shared_prefのデータを削除
+              StateManagerClass().removeTestModel(ref);
+
+              /// Listデータの削除
+              ref.read(testDataStoreProvider).clear();
+              ref.read(testListProvider).clear();
+            },
           ),
         );
 }
 
-void _launchUrl(urlname) async {
-  final Uri _url = Uri.parse(urlname);
-  if (!await launchUrl(_url)) throw 'Could not launch $_url';
+class _toAboutPage extends Card {
+  _toAboutPage(BuildContext context, WidgetRef ref)
+      : super(
+          child: ListTile(
+            title: const Text('About'),
+            contentPadding: EdgeInsets.all(10),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AboutPage()));
+            },
+          ),
+        );
 }

@@ -24,6 +24,7 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
   @override
   Widget build(BuildContext context) {
     final _questionList = InitListClass().qSelectQList(ref);
+    final _maxNumOfQuestion = 100;
 
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +33,7 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
       drawer: DrawerMenu(context),
       body: Column(
         children: [
-          const Text('設問は100問まで設定できます。'),
+          Text('設問は' + _maxNumOfQuestion.toString() + '問まで設定できます。'),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -57,8 +58,8 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
         child: const Icon(Icons.add),
         onPressed: () {
           ref.read(isUpdateQuestionProvider)
-              ? RunClass().updateAddQuestion(ref)
-              : RunClass().addQuestion(ref);
+              ? RunClass().updateAddQuestion(ref, _maxNumOfQuestion)
+              : RunClass().addQuestion(ref, _maxNumOfQuestion);
         },
       ),
     );
@@ -72,7 +73,6 @@ class _QuestionCard extends Card {
           child: ListTile(
             title: Text(_questionList[_index]),
             contentPadding: const EdgeInsets.all(8),
-            // subtitle: Text(_questionList[_index]),
             trailing: _QuestionCardPopup(context, ref, _questionList, _index),
           ),
         );

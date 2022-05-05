@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:score_counter/main.dart';
 import 'package:score_counter/model/runClass.dart';
 import 'package:score_counter/view/MemberSetPage.dart';
+import 'package:score_counter/view/createPage.dart';
 import 'package:score_counter/view/myHomePage.dart';
 import 'package:score_counter/view/questionSetPage.dart';
 
@@ -11,7 +12,8 @@ class TestListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _testList = ref.watch(testListProvider);
+    final _testList = InitListClass().testPageTestlist(ref);
+    final _maxNumOfTest = 5;
 
     return Scaffold(
       appBar: AppBar(
@@ -20,24 +22,40 @@ class TestListPage extends ConsumerWidget {
       drawer: DrawerMenu(context),
       body: Column(
         children: [
+          const Text('テスト数は5までです。'),
           InfoCard(context, ref, 'テスト数', _testList.length.toString()),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(10),
               itemCount: _testList.length,
               itemBuilder: (context, index) {
-                return _QuestionCard(context, ref, _testList, index);
+                return _TestCard(context, ref, _testList, index);
               },
             ),
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'テスト追加',
+        child: const Icon(Icons.add),
+        onPressed: () {
+          _testList.length < _maxNumOfTest
+              ? Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const CreatePage()))
+              : showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return _addActionPopup(context, _maxNumOfTest);
+                  },
+                );
+        },
+      ),
     );
   }
 }
 
-class _QuestionCard extends Card {
-  _QuestionCard(BuildContext context, WidgetRef ref, List _testList, int _index)
+class _TestCard extends Card {
+  _TestCard(BuildContext context, WidgetRef ref, List _testList, int _index)
       : super(
           child: ListTile(
             title: Text(_testList[_index]),
@@ -53,13 +71,13 @@ class _QuestionCard extends Card {
                 ),
               );
             },
-            trailing: _QuestionCardPopup(context, ref, _testList, _index),
+            trailing: _TestCardPopup(context, ref, _testList, _index),
           ),
         );
 }
 
-class _QuestionCardPopup extends PopupMenuButton<int> {
-  _QuestionCardPopup(
+class _TestCardPopup extends PopupMenuButton<int> {
+  _TestCardPopup(
       BuildContext context, WidgetRef ref, List _testList, int _index)
       : super(
           icon: const Icon(Icons.more_vert),
@@ -104,5 +122,19 @@ class _QuestionCardPopup extends PopupMenuButton<int> {
               RunClass().removeTestListCard(ref, _testList, _index);
             }
           },
+        );
+}
+
+class _addActionPopup extends AlertDialog {
+  _addActionPopup(BuildContext context, int _maxNumOfTest)
+      : super(
+          title: const Text('注意'),
+          content: Text('テスト数は' + _maxNumOfTest.toString() + 'までです。'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'),
+            ),
+          ],
         );
 }
