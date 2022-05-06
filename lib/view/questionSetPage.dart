@@ -25,6 +25,7 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
   Widget build(BuildContext context) {
     final _questionList = InitListClass().qSelectQList(ref);
     final _maxNumOfQuestion = 100;
+    final _pointController = TextEditingController(text: '1');
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +39,8 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               InfoCard(context, ref, '問題数', _questionList.length.toString()),
-              InfoCard(context, ref, '合計配点', RunClass().sumPoint(ref)),
+              InfoCard(
+                  context, ref, '合計配点', RunClassQuestionSet().sumPoint(ref)),
             ],
           ),
           Expanded(
@@ -57,9 +59,10 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
         tooltip: '設問追加',
         child: const Icon(Icons.add),
         onPressed: () {
-          ref.read(isUpdateQuestionProvider)
-              ? RunClass().updateAddQuestion(ref, _maxNumOfQuestion)
-              : RunClass().addQuestion(ref, _maxNumOfQuestion);
+          showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => _addAction(
+                  context, ref, _maxNumOfQuestion, _pointController));
         },
       ),
     );
@@ -103,8 +106,10 @@ class _QuestionCardPopup extends PopupMenuButton<int> {
           onSelected: (int val) {
             if (val == 0) {
               ref.read(isUpdateQuestionProvider)
-                  ? RunClass().updateRemoveQuestion(ref, _questionList, _index)
-                  : RunClass().removeQuestion(ref, _questionList, _index);
+                  ? RunClassQuestionSet()
+                      .updateRemoveQuestion(ref, _questionList, _index)
+                  : RunClassQuestionSet()
+                      .removeQuestion(ref, _questionList, _index);
             }
           },
         );
@@ -130,5 +135,39 @@ class _SaveButton extends Align {
               },
             ),
           ),
+        );
+}
+
+class _addAction extends AlertDialog {
+  _addAction(BuildContext context, WidgetRef ref, int _maxNumOfQuestion,
+      TextEditingController _pointController)
+      : super(
+          title: const Text('新規質問の配点'),
+          content: _TextFieldContainer(context, ref, _pointController),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                ref.read(isUpdateQuestionProvider)
+                    ? RunClassQuestionSet().updateAddQuestion(ref,
+                        _maxNumOfQuestion, int.parse(_pointController.text))
+                    : RunClassQuestionSet().addQuestion(ref, _maxNumOfQuestion,
+                        int.parse(_pointController.text));
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+}
+
+class _TextFieldContainer extends Container {
+  _TextFieldContainer(BuildContext context, WidgetRef ref,
+      TextEditingController _pointController)
+      : super(
+          child: TextField(controller: _pointController),
         );
 }

@@ -17,10 +17,6 @@ final darkmodeProvider = StateManager.darkmodeStateProvider;
 
 /// Riverpod StateProvider for textcontroller
 final testNameControllerProvider = StateManager.testNameControllerStateProvider;
-final memberNameControllerProvider =
-    StateManager.memberNameControllerStateProvider;
-final questionNameControllerProvider =
-    StateManager.questionNameControllerStateProvider;
 
 /// Riverpod StateProvider for list
 final testListProvider = StateManager.testListStateProvider;
@@ -71,9 +67,10 @@ class MyAppState extends ConsumerState<MyApp> {
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-        Locale('ja', 'JP'),
+        const Locale('ja', ''),
       ],
     );
   }

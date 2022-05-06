@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AboutPage extends ConsumerWidget {
+class AboutPage extends ConsumerStatefulWidget {
   const AboutPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  AboutPageState createState() => AboutPageState();
+}
+
+class AboutPageState extends ConsumerState<AboutPage> {
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("設定"),

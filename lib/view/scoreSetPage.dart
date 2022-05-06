@@ -10,9 +10,9 @@ class ScoreSetPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final _questionList = InitListClass().sSelectQList(ref);
-    final _scoreInfo = RunClass().sumScore(ref)['Correct'].toString() +
+    final _scoreInfo = RunClassScoreSet().sumScore(ref)['Correct'].toString() +
         '  /  ' +
-        RunClass().sumScore(ref)['Total'].toString();
+        RunClassScoreSet().sumScore(ref)['Total'].toString();
 
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +65,8 @@ class _QuestionCard extends Card {
                   icon: const Icon(Icons.check_circle_outline),
                   color: Colors.white,
                   onPressed: () {
-                    RunClass().scoreSetRun(ref, _questionList, _index, true);
+                    RunClassScoreSet()
+                        .scoreSetRun(ref, _questionList, _index, true);
                   },
                 ),
               ),
@@ -78,7 +79,8 @@ class _QuestionCard extends Card {
                   icon: const Icon(Icons.clear_rounded),
                   color: Colors.white,
                   onPressed: () {
-                    RunClass().scoreSetRun(ref, _questionList, _index, false);
+                    RunClassScoreSet()
+                        .scoreSetRun(ref, _questionList, _index, false);
                   },
                 ),
               ),

@@ -119,7 +119,7 @@ class _TestCardPopup extends PopupMenuButton<int> {
                 ),
               );
             } else if (val == 1) {
-              RunClass().removeTestListCard(ref, _testList, _index);
+              RunClassTestList().removeTestListCard(ref, _testList, _index);
             }
           },
         );

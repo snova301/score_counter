@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:score_counter/main.dart';
 import 'package:score_counter/model/runClass.dart';
+import 'package:score_counter/model/testDataModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,12 +12,6 @@ class StateManagerClass {
 
   /// initiallize provider for textcontroller
   final testNameControllerStateProvider = StateProvider((ref) {
-    return TextEditingController(text: '');
-  });
-  final memberNameControllerStateProvider = StateProvider((ref) {
-    return TextEditingController(text: '');
-  });
-  final questionNameControllerStateProvider = StateProvider((ref) {
     return TextEditingController(text: '');
   });
 

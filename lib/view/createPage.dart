@@ -49,7 +49,8 @@ class _NextButton extends Align {
               ),
               onPressed: () {
                 // テスト名が空欄の場合や重複の場合にAlertを出力
-                (_controller.text == '' || RunClass().isTestNameDuplicate(ref))
+                (_controller.text == '' ||
+                        RunClassWhole().isTestNameDuplicate(ref))
                     ? showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -57,7 +58,7 @@ class _NextButton extends Align {
                         },
                       )
                     : {
-                        RunClass().createSelectTestName(ref),
+                        RunClassWhole().createSelectTestName(ref),
                         ref.read(isUpdateQuestionProvider.state).state = false,
                         Navigator.push(
                           context,

@@ -51,7 +51,7 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
       floatingActionButton: ref.watch(isMemberSetModeProvider)
           ? FloatingActionButton(
               onPressed: () {
-                RunClass().addMember(ref, _maxNumOfMember);
+                RunClassMemberSet().addMember(ref, _maxNumOfMember);
               },
               tooltip: 'メンバー追加',
               child: const Icon(Icons.add),
@@ -114,7 +114,7 @@ class _MemberCardPopup extends PopupMenuButton<int> {
           ],
           onSelected: (int val) {
             if (val == 0) {
-              RunClass().removeMember(ref, _memberList, _index);
+              RunClassMemberSet().removeMember(ref, _memberList, _index);
             }
           },
         );
@@ -132,7 +132,7 @@ class _BackButton extends Align {
                     onPressed: () {
                       ref.read(isUpdateQuestionProvider)
                           ? null
-                          : RunClass().addClearTestName(ref);
+                          : RunClassWhole().addClearTestName(ref);
                       Navigator.push(
                         context,
                         MaterialPageRoute(

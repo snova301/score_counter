@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:score_counter/main.dart';
 import 'package:score_counter/model/stateManager.dart';
+import 'package:score_counter/model/testDataModel.dart';
 
 /// 実行用メソッドを集めたクラス
-class RunClass {
+class RunClassWhole {
   void createSelectTestName(WidgetRef ref) {
     ref.read(selectTestNameProvider.state).state =
         ref.read(testNameControllerProvider).text;
@@ -38,7 +39,9 @@ class RunClass {
         .read(testListProvider)
         .contains(ref.read(testNameControllerProvider).text);
   }
+}
 
+class RunClassScoreSet {
   /// ScoreSetPageで採点実施
   void scoreSetRun(
       WidgetRef ref, List _questionList, int _index, bool _answer) {
@@ -69,17 +72,6 @@ class RunClass {
     //       ' / ' +
     //       val.score.toString());
     // });
-  }
-
-  /// QuestionSetPageで配点の合計を計算
-  String sumPoint(WidgetRef ref) {
-    final _pointList = ref.watch(pointListProvider);
-    int _returnPoint = 0;
-    if (_pointList.isNotEmpty) {}
-
-    return _pointList.isEmpty
-        ? '0'
-        : _pointList.reduce((val, ele) => val + ele).toString();
   }
 
   /// 得点を計算
@@ -122,9 +114,20 @@ class RunClass {
 
     return _sumScoreMap;
   }
+}
+
+class RunClassQuestionSet {
+  /// QuestionSetPageで配点の合計を計算
+  String sumPoint(WidgetRef ref) {
+    final _pointList = ref.watch(pointListProvider);
+
+    return _pointList.isEmpty
+        ? '0'
+        : _pointList.reduce((val, ele) => val + ele).toString();
+  }
 
   /// QuestionSetPageで設問を追加
-  void addQuestion(WidgetRef ref, int _maxNumOfQuestion) {
+  void addQuestion(WidgetRef ref, int _maxNumOfQuestion, int _newPoint) {
     /// 読込
     final _questionList = ref.read(questionListProvider);
     final _pointList = ref.read(pointListProvider);
@@ -135,7 +138,7 @@ class RunClass {
       /// _questionListがemptyなら'QUESTION - 1'を書き込む
       /// elseなら、番号が小さい順に設問を確認し、リストに追加
       String _newQuestionName = 'QUESTION - 1';
-      int _newPoint = 1;
+      // int _newPoint = 1;
       if (_questionList.isEmpty) {
         _questionList.add(_newQuestionName);
         _pointList.add(_newPoint);
@@ -157,7 +160,7 @@ class RunClass {
   }
 
   /// AddQuestionのupdate対応
-  void updateAddQuestion(WidgetRef ref, int _maxNumOfQuestion) {
+  void updateAddQuestion(WidgetRef ref, int _maxNumOfQuestion, int _newPoint) {
     /// 読込
     final _questionList = ref.read(questionListProvider);
     final _pointList = ref.read(pointListProvider);
@@ -169,7 +172,7 @@ class RunClass {
 
       /// 表示用設問リストへの追加
       String _newQuestionName = '';
-      int _newPoint = 1;
+      // int _newPoint = 1;
       if (_questionList.isEmpty) {
         _questionList.add('QUESTION - 1');
         _pointList.add(_newPoint);
@@ -263,7 +266,9 @@ class RunClass {
     /// Testmodelをshared_preferencesに書き込み
     StateManagerClass().setTestModel(_testDataStore);
   }
+}
 
+class RunClassMemberSet {
   /// MemberSetPageでメンバーを追加
   /// メンバー追加でデータモデルを構築
   /// _memberListのデータがおかしいので要注意
@@ -341,7 +346,9 @@ class RunClass {
     /// Testmodelをshared_preferencesに書き込み
     StateManagerClass().setTestModel(_testDataStore);
   }
+}
 
+class RunClassTestList {
   /// TestListPageのCardを削除
   void removeTestListCard(WidgetRef ref, List _testList, int _index) {
     /// データ読込
@@ -463,39 +470,4 @@ class InitListClass {
 
     ref.read(scoreListProvider.state).state = [..._scoreList];
   }
-}
-
-/// データモデルの定義
-class TestDataModel {
-  String testname; // テスト名
-  String question; // 設問
-  String member; // メンバー
-
-  int point; // 設問の配点
-  bool score; // 得点
-
-  TestDataModel(
-    this.testname,
-    this.question,
-    this.member,
-    this.point,
-    this.score,
-  );
-
-  /// Map型に変換
-  Map toJson() => {
-        'testname': testname,
-        'question': question,
-        'member': member,
-        'point': point,
-        'score': score,
-      };
-
-  /// JSONオブジェクトを代入
-  TestDataModel.fromJson(Map json)
-      : testname = json['testname'],
-        question = json['question'],
-        member = json['member'],
-        point = json['point'],
-        score = json['score'];
 }
