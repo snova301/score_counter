@@ -22,7 +22,7 @@ class TestListPage extends ConsumerWidget {
       drawer: DrawerMenu(context),
       body: Column(
         children: [
-          const Text('テスト数は5までです。'),
+          Text('テスト数は' + _maxNumOfTest.toString() + 'までです。'),
           InfoCard(context, ref, 'テスト数', _testList.length.toString()),
           Expanded(
             child: ListView.builder(
@@ -91,9 +91,18 @@ class _TestCardPopup extends PopupMenuButton<int> {
                 ],
               ),
             ),
-            const PopupMenuDivider(),
             PopupMenuItem(
               value: 1,
+              child: Row(
+                children: const <Widget>[
+                  Icon(Icons.people),
+                  Text(' メンバー設定'),
+                ],
+              ),
+            ),
+            const PopupMenuDivider(),
+            PopupMenuItem(
+              value: 2,
               child: Row(
                 children: const <Widget>[
                   Icon(
@@ -119,6 +128,15 @@ class _TestCardPopup extends PopupMenuButton<int> {
                 ),
               );
             } else if (val == 1) {
+              ref.read(selectTestNameProvider.state).state = _testList[_index];
+              ref.read(isMemberSetModeProvider.state).state = true;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MemberSetPage(),
+                ),
+              );
+            } else if (val == 2) {
               RunClassTestList().removeTestListCard(ref, _testList, _index);
             }
           },

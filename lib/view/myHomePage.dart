@@ -105,7 +105,7 @@ class InfoCard extends Card {
   InfoCard(BuildContext context, WidgetRef ref, String _title, String _num)
       : super(
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.3,
+            // width: MediaQuery.of(context).size.width * 0.5,
             padding: const EdgeInsets.all(10),
             margin: const EdgeInsets.all(10),
             child: Column(

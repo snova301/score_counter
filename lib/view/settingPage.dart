@@ -16,8 +16,8 @@ class SettingPage extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(10),
         children: <Widget>[
-          _DarkmodeCard(context, ref),
-          _CacheClearCard(context, ref),
+          _darkmodeCard(context, ref),
+          _dataRemoveCard(context, ref),
           _toAboutPage(context, ref),
         ],
       ),
@@ -25,8 +25,8 @@ class SettingPage extends ConsumerWidget {
   }
 }
 
-class _DarkmodeCard extends Card {
-  _DarkmodeCard(BuildContext context, WidgetRef ref)
+class _darkmodeCard extends Card {
+  _darkmodeCard(BuildContext context, WidgetRef ref)
       : super(
           child: SwitchListTile(
             title: const Text('ダークモード'),
@@ -41,8 +41,8 @@ class _DarkmodeCard extends Card {
         );
 }
 
-class _CacheClearCard extends Card {
-  _CacheClearCard(BuildContext context, WidgetRef ref)
+class _dataRemoveCard extends Card {
+  _dataRemoveCard(BuildContext context, WidgetRef ref)
       : super(
           child: ListTile(
             title: const Text('採点データを削除'),
@@ -51,14 +51,40 @@ class _CacheClearCard extends Card {
             contentPadding: EdgeInsets.all(10),
             leading: const Icon(Icons.delete_outline),
             onTap: () {
-              /// shared_prefのデータを削除
-              StateManagerClass().removeTestModel(ref);
-
-              /// Listデータの削除
-              ref.read(testDataStoreProvider).clear();
-              ref.read(testListProvider).clear();
+              showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      _dataRemoveDialog(context, ref));
             },
           ),
+        );
+}
+
+class _dataRemoveDialog extends AlertDialog {
+  _dataRemoveDialog(BuildContext context, WidgetRef ref)
+      : super(
+          title: const Text('注意'),
+          content: const Text('すべての採点データが削除されます。\n(すでにエクスポートされたデータは削除されません。)'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                /// shared_prefのデータを削除
+                StateManagerClass().removeTestModel(ref);
+
+                /// Listデータの削除
+                ref.read(testDataStoreProvider).clear();
+                ref.read(testListProvider).clear();
+
+                /// 戻る
+                Navigator.pop(context);
+              },
+            ),
+          ],
         );
 }
 

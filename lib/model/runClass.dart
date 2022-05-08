@@ -127,18 +127,20 @@ class RunClassQuestionSet {
   }
 
   /// QuestionSetPageで設問を追加
-  void addQuestion(WidgetRef ref, int _maxNumOfQuestion, int _newPoint) {
+  void addQuestion(WidgetRef ref, int _maxNumOfQuestion) {
     /// 読込
     final _questionList = ref.read(questionListProvider);
-    final _pointList = ref.read(pointListProvider);
 
     /// 設問リストは _maxNumOfQuestion 問まで
     if (_questionList.length < _maxNumOfQuestion) {
+      /// 読込
+      final _pointList = ref.read(pointListProvider);
+      final _newPoint = ref.read(selectPointProvider);
+      String _newQuestionName = 'QUESTION - 1';
+
       /// 表示用設問リストへの追加
       /// _questionListがemptyなら'QUESTION - 1'を書き込む
       /// elseなら、番号が小さい順に設問を確認し、リストに追加
-      String _newQuestionName = 'QUESTION - 1';
-      // int _newPoint = 1;
       if (_questionList.isEmpty) {
         _questionList.add(_newQuestionName);
         _pointList.add(_newPoint);
@@ -160,19 +162,18 @@ class RunClassQuestionSet {
   }
 
   /// AddQuestionのupdate対応
-  void updateAddQuestion(WidgetRef ref, int _maxNumOfQuestion, int _newPoint) {
+  void updateAddQuestion(WidgetRef ref, int _maxNumOfQuestion) {
     /// 読込
     final _questionList = ref.read(questionListProvider);
-    final _pointList = ref.read(pointListProvider);
-    print(_questionList.length);
 
     /// 設問リストは _maxNumOfQuestion 問まで
     if (_questionList.length < _maxNumOfQuestion) {
-      print('ljkafnbckajnkcjbakn');
+      /// 読込
+      final _pointList = ref.read(pointListProvider);
+      final _newPoint = ref.read(selectPointProvider);
+      String _newQuestionName = '';
 
       /// 表示用設問リストへの追加
-      String _newQuestionName = '';
-      // int _newPoint = 1;
       if (_questionList.isEmpty) {
         _questionList.add('QUESTION - 1');
         _pointList.add(_newPoint);
@@ -190,8 +191,6 @@ class RunClassQuestionSet {
       /// 表示用リストの更新
       ref.read(questionListProvider.state).state = [..._questionList];
       ref.read(pointListProvider.state).state = [..._pointList];
-      print('ref.read(questionListProvider).length');
-      print(ref.read(questionListProvider).length);
 
       /// データ追加
       /// 読込

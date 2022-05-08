@@ -26,6 +26,7 @@ class StateManagerClass {
   final selectTestNameStateProvider = StateProvider((ref) => '');
   final selectQuestionStateProvider = StateProvider((ref) => '');
   final selectMemberStateProvider = StateProvider((ref) => '');
+  final selectPointStateProvider = StateProvider((ref) => 0);
 
   /// initiallize provider for setmode
   final isUpdateQuestionStateProvider = StateProvider((ref) => false);

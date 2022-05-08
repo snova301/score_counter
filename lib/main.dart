@@ -29,6 +29,7 @@ final scoreListProvider = StateManager.scoreListStateProvider;
 final selectTestNameProvider = StateManager.selectTestNameStateProvider;
 final selectQuestionProvider = StateManager.selectQuestionStateProvider;
 final selectMemberProvider = StateManager.selectMemberStateProvider;
+final selectPointProvider = StateManager.selectPointStateProvider;
 
 /// Riverpod StateProvider for data
 final isUpdateQuestionProvider = StateManager.isUpdateQuestionStateProvider;
@@ -60,10 +61,12 @@ class MyAppState extends ConsumerState<MyApp> {
 
     return MaterialApp(
       title: '採点カウンター',
-      theme: ThemeData(
-          brightness: isDarkmode ? Brightness.dark : Brightness.light,
-          primarySwatch: Colors.green),
       home: const MyHomePage(),
+      theme: ThemeData(
+        brightness: isDarkmode ? Brightness.dark : Brightness.light,
+        primarySwatch: Colors.green,
+        fontFamily: 'NotoSansJP',
+      ),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

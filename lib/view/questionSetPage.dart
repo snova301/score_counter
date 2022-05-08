@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:score_counter/model/runClass.dart';
@@ -13,25 +14,32 @@ class QuestionSetPage extends ConsumerStatefulWidget {
 }
 
 class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
-  /// 前回までのリストをクリアし、重複を防ぐ
   @override
   void initState() {
     super.initState();
+
+    /// 前回までのリストをクリアし、重複を防ぐ
     ref.read(questionListProvider).clear();
     ref.read(pointListProvider).clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    /// _questionListの作成
     final _questionList = InitListClass().qSelectQList(ref);
+
+    /// 設問の最大数の決定
     final _maxNumOfQuestion = 100;
-    final _pointController = TextEditingController(text: '1');
+
+    /// picker用のリスト初期化
+    List<int> _numsList =
+        List.generate(_maxNumOfQuestion, (index) => index + 1);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('設問設定'),
       ),
-      drawer: DrawerMenu(context),
+      // drawer: DrawerMenu(context),
       body: Column(
         children: [
           Text('設問は' + _maxNumOfQuestion.toString() + '問まで設定できます。'),
@@ -52,7 +60,7 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
               },
             ),
           ),
-          _SaveButton(context, ref)
+          _SaveButton(context, ref),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -61,14 +69,16 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
         onPressed: () {
           showDialog<String>(
               context: context,
-              builder: (BuildContext context) => _addAction(
-                  context, ref, _maxNumOfQuestion, _pointController));
+              builder: (BuildContext context) =>
+                  _addAction(context, ref, _maxNumOfQuestion, _numsList));
+          // context, ref, _maxNumOfQuestion, _pointController));
         },
       ),
     );
   }
 }
 
+/// _QuestionCardはCard Widgetをextendして作成
 class _QuestionCard extends Card {
   _QuestionCard(
       BuildContext context, WidgetRef ref, List _questionList, int _index)
@@ -118,56 +128,60 @@ class _QuestionCardPopup extends PopupMenuButton<int> {
 class _SaveButton extends Align {
   _SaveButton(BuildContext context, WidgetRef ref)
       : super(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.all(10),
-            child: ElevatedButton(
-              child: ref.read(isUpdateQuestionProvider)
-                  ? const Text('保存してメンバー設定へ')
-                  : const Text('メンバー設定へ'),
-              onPressed: () {
-                ref.read(isMemberSetModeProvider.state).state = true;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MemberSetPage()),
-                );
-              },
-            ),
-          ),
+          child: ref.read(isUpdateQuestionProvider)
+              ? null
+              : Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
+                  child: ElevatedButton(
+                    child: const Text('メンバー設定へ'),
+                    onPressed: () {
+                      ref.read(isMemberSetModeProvider.state).state = true;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MemberSetPage()),
+                      );
+                    },
+                  ),
+                ),
         );
 }
 
 class _addAction extends AlertDialog {
   _addAction(BuildContext context, WidgetRef ref, int _maxNumOfQuestion,
-      TextEditingController _pointController)
+      List _numsList)
       : super(
           title: const Text('新規質問の配点'),
-          content: _TextFieldContainer(context, ref, _pointController),
+          scrollable: true,
+          content: _selectPointPicker(context, ref, _numsList),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(context),
             ),
             TextButton(
+              child: const Text('OK'),
               onPressed: () {
                 ref.read(isUpdateQuestionProvider)
-                    ? RunClassQuestionSet().updateAddQuestion(ref,
-                        _maxNumOfQuestion, int.parse(_pointController.text))
-                    : RunClassQuestionSet().addQuestion(ref, _maxNumOfQuestion,
-                        int.parse(_pointController.text));
+                    ? RunClassQuestionSet()
+                        .updateAddQuestion(ref, _maxNumOfQuestion)
+                    : RunClassQuestionSet().addQuestion(ref, _maxNumOfQuestion);
                 Navigator.pop(context);
               },
-              child: const Text('OK'),
             ),
           ],
         );
 }
 
-class _TextFieldContainer extends Container {
-  _TextFieldContainer(BuildContext context, WidgetRef ref,
-      TextEditingController _pointController)
+/// 得点をpicker形式で選択できるようにする
+class _selectPointPicker extends CupertinoPicker {
+  _selectPointPicker(BuildContext context, WidgetRef ref, List _numsList)
       : super(
-          child: TextField(controller: _pointController),
+          itemExtent: 30,
+          children: _numsList.map((num) => Text(num.toString())).toList(),
+          onSelectedItemChanged: (index) {
+            ref.read(selectPointProvider.state).state = _numsList[index];
+          },
         );
 }

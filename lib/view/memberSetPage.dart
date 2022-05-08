@@ -128,7 +128,7 @@ class _BackButton extends Align {
                   padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.all(10),
                   child: ElevatedButton(
-                    child: const Text('保存してテストリスト一覧へ'),
+                    child: const Text('テストリストへ'),
                     onPressed: () {
                       ref.read(isUpdateQuestionProvider)
                           ? null
