@@ -1,15 +1,16 @@
 # Score counter SCCO
 
-https://img.shields.io/badge/language-dart-blue.svg
+![](https://img.shields.io/badge/dart-v2.16.2-blue?style=flat&logo=dart)
 
-https://img.shields.io/badge/framework-flutter-blue
+![](https://img.shields.io/badge/flutter-v2.10.5-blue?style=flat&logo=flutter)
 
-https://img.shields.io/badge/licence-MIT-brightgreen.svg
-
-https://img.shields.io/badge/Build-passing-green.svg
+![](https://img.shields.io/badge/-firebase-orange?style=flat&logo=firebase)
 
 
 SCCO is mobile/web app to count test score for school teachers, students, and all studying people.
+
+
+![](../screenshot/Screenshot_1651470156.png)
 
 
 ## Getting Started
@@ -18,14 +19,11 @@ For android app
 
 
 
-For web app
+For web app (w/ Firebase)
 
+https://scco-2df5d.web.app
 
 
 ## How to use
 
-
-
-## Web App
-
-https://scco-2df5d.web.app
+You can know how to use to click [here](https://snova301.github.io/AppService/score_counter/home.html). Only Japanese words.
