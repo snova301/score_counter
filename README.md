@@ -1,18 +1,31 @@
-# score counter
+# Score counter SCCO
 
-A new Flutter project.
+https://img.shields.io/badge/language-dart-blue.svg
+
+https://img.shields.io/badge/framework-flutter-blue
+
+https://img.shields.io/badge/licence-MIT-brightgreen.svg
+
+https://img.shields.io/badge/Build-passing-green.svg
+
+
+SCCO is mobile/web app to count test score for school teachers, students, and all studying people.
+
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+For android app
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+For web app
+
+
+
+## How to use
+
+
+
+## Web App
 
 https://scco-2df5d.web.app
