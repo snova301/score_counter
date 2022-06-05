@@ -1,6 +1,6 @@
 {
-    "name": "score_counter",
-    "short_name": "score_counter",
+    "name": "scco",
+    "short_name": "scco",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

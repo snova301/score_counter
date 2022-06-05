@@ -49,6 +49,6 @@ class _LinkCard extends Card {
 
 void _launchUrl(urlname) async {
   final Uri _url = Uri.parse(urlname);
-  if (!await launchUrl(_url)) throw 'Could not launch $_url';
-  // if (!await launchUrl(urlname)) throw 'Could not launch $urlname';
+  if (!await launchUrl(_url, mode: LaunchMode.externalApplication))
+    throw 'Could not launch $_url';
 }

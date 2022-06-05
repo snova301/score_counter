@@ -1,14 +1,44 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:score_counter/firebase_options.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import 'package:score_counter/view/myHomePage.dart';
 import 'package:score_counter/model/stateManager.dart';
 
-/// main function
-void main() {
-  runApp(
-    const ProviderScope(child: MyApp()),
-  );
+/// プラットフォームの確認
+final isAndroid =
+    defaultTargetPlatform == TargetPlatform.android ? true : false;
+final isIOS = defaultTargetPlatform == TargetPlatform.iOS ? true : false;
+
+/// メイン
+void main() async {
+  /// クラッシュハンドラ
+  runZonedGuarded<Future<void>>(() async {
+    /// Firebaseの初期化
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await Firebase.initializeApp(
+      name: isAndroid || isIOS ? 'scco' : null,
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    /// クラッシュハンドラ(Flutterフレームワーク内でスローされたすべてのエラー)
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+    /// runApp w/ Riverpod
+    runApp(const ProviderScope(child: MyApp()));
+  },
+
+      /// クラッシュハンドラ(Flutterフレームワーク内でキャッチされないエラー)
+      (error, stack) =>
+          FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
 }
 
 /// Riverpod StateProvider for setteing
@@ -60,11 +90,11 @@ class MyAppState extends ConsumerState<MyApp> {
     final isDarkmode = ref.watch(darkmodeProvider);
 
     return MaterialApp(
-      title: '採点カウンター',
+      title: '採点カウンター SCCO (β)',
       home: const MyHomePage(),
       theme: ThemeData(
         brightness: isDarkmode ? Brightness.dark : Brightness.light,
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.teal,
         fontFamily: 'NotoSansJP',
       ),
       localizationsDelegates: [
@@ -75,6 +105,7 @@ class MyAppState extends ConsumerState<MyApp> {
       supportedLocales: [
         const Locale('ja', ''),
       ],
+      debugShowCheckedModeBanner: false,
     );
   }
 }

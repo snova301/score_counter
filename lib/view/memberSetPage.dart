@@ -61,6 +61,7 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
   }
 }
 
+/// メンバーを表示するためのwidget
 class _MemberCard extends Card {
   _MemberCard(BuildContext context, WidgetRef ref, List _memberList, int _index)
       : super(

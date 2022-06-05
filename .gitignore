@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+migrate_working_dir/
 
 # IntelliJ related
 *.iml
@@ -45,4 +46,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Secret
+
+# ignore
+.metadata
+lib/firebase_options.dart
