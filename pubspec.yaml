@@ -109,3 +109,5 @@ flutter:
     - family: NotoSansJP
       fonts:
         - asset: assets/fonts/NotoSansJP-Regular.otf
+  assets:
+    - assets/images/

@@ -34,8 +34,8 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
       ),
       body: Column(
         children: [
-          Text('メンバーは' + _maxNumOfMember.toString() + '人まで設定できます。'),
-          InfoCard(context, ref, '人数', _memberList.length.toString()),
+          Text('メンバーは' + _maxNumOfMember.toString() + '人まで'),
+          InfoCard('人数', '${_memberList.length}'),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(8),

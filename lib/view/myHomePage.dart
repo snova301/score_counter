@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-import 'package:score_counter/main.dart';
-import 'package:score_counter/model/runClass.dart';
-import 'package:score_counter/model/stateManager.dart';
 import 'package:score_counter/view/testListPage.dart';
 import 'package:score_counter/view/settingPage.dart';
+import 'package:score_counter/view/aboutPage.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -24,10 +22,33 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
       ),
       drawer: DrawerMenu(context),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          HomePagePush(context, '採点リスト', const TestListPage()),
-          HomePagePush(context, '設定', const SettingPage()),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(30),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    child: Image.asset('images/image.png',
+                        width: 100, height: 100),
+                  ),
+                ),
+                HomePagePush(context, '採点リスト', const TestListPage()),
+                HomePagePush(context, '設定', const SettingPage()),
+                HomePagePush(context, 'About', const AboutPage()),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: const Text(
+              'ご利用は利用規約とプライバシーポリシーに同意したものとします。',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+          ),
         ],
       ),
     );
@@ -102,13 +123,25 @@ class DrawerMenu extends Drawer {
                   );
                 },
               ),
+              ListTile(
+                title: const Text('About'),
+                onTap: () {
+                  AnalyticsService().logPage('About');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AboutPage(),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         );
 }
 
 class InfoCard extends Card {
-  InfoCard(BuildContext context, WidgetRef ref, String _title, String _num)
+  InfoCard(String _title, String _num)
       : super(
           child: Container(
             // width: MediaQuery.of(context).size.width * 0.5,

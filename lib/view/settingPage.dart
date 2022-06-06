@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:score_counter/model/stateManager.dart';
-import 'package:score_counter/view/aboutPage.dart';
 import '/main.dart';
 
 class SettingPage extends ConsumerWidget {
@@ -18,7 +17,6 @@ class SettingPage extends ConsumerWidget {
         children: <Widget>[
           _darkmodeCard(context, ref),
           _dataRemoveCard(context, ref),
-          _toAboutPage(context, ref),
         ],
       ),
     );
@@ -85,19 +83,5 @@ class _dataRemoveDialog extends AlertDialog {
               },
             ),
           ],
-        );
-}
-
-class _toAboutPage extends Card {
-  _toAboutPage(BuildContext context, WidgetRef ref)
-      : super(
-          child: ListTile(
-            title: const Text('About'),
-            contentPadding: EdgeInsets.all(10),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AboutPage()));
-            },
-          ),
         );
 }

@@ -23,8 +23,8 @@ class ScoreSetPage extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              InfoCard(context, ref, '問題数', _questionList.length.toString()),
-              InfoCard(context, ref, '得点  /  全体点', _scoreInfo),
+              InfoCard('問題数', _questionList.length.toString()),
+              InfoCard('得点  /  全体点', _scoreInfo),
             ],
           ),
           Expanded(

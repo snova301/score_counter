@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:score_counter/main.dart';
 import 'package:score_counter/model/runClass.dart';
 import 'package:score_counter/view/questionSetPage.dart';
@@ -31,6 +32,7 @@ class _TextFieldContainer extends Container {
       : super(
             child: TextField(
           controller: _controller,
+          autofocus: true,
         ));
 }
 
@@ -54,7 +56,7 @@ class _NextButton extends Align {
                     ? showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return _NextButtonDialog(context, ref);
+                          return _NextButtonDialog(context);
                         },
                       )
                     : {
@@ -74,7 +76,7 @@ class _NextButton extends Align {
 }
 
 class _NextButtonDialog extends AlertDialog {
-  _NextButtonDialog(BuildContext context, WidgetRef ref)
+  _NextButtonDialog(BuildContext context)
       : super(
           title: const Text('注意'),
           content: const Text('テスト名が空欄または重複しています。\n入力内容を確認してください。'),

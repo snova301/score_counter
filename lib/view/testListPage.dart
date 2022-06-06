@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:score_counter/main.dart';
 import 'package:score_counter/model/runClass.dart';
 import 'package:score_counter/view/MemberSetPage.dart';
@@ -19,11 +20,15 @@ class TestListPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('テストリスト'),
       ),
+
+      /// drawer
       drawer: DrawerMenu(context),
       body: Column(
         children: [
-          Text('テスト数は' + _maxNumOfTest.toString() + 'までです。'),
-          InfoCard(context, ref, 'テスト数', _testList.length.toString()),
+          Text('テストの数は$_maxNumOfTestまで'),
+          InfoCard('テスト数', '${_testList.length}  /  $_maxNumOfTest'),
+
+          /// テストのリストを表示
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(10),
@@ -35,10 +40,13 @@ class TestListPage extends ConsumerWidget {
           ),
         ],
       ),
+
+      /// 追加ボタン
       floatingActionButton: FloatingActionButton(
         tooltip: 'テスト追加',
         child: const Icon(Icons.add),
         onPressed: () {
+          /// テストの数を制限
           _testList.length < _maxNumOfTest
               ? Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const CreatePage()))

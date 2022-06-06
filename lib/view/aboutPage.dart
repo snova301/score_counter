@@ -25,9 +25,9 @@ class AboutPageState extends ConsumerState<AboutPage> {
         padding: const EdgeInsets.all(10),
         children: <Widget>[
           _LinkCard(context, '利用規約',
-              'https://snova301.github.io/AppService/score_counter/home.html'),
+              'https://snova301.github.io/AppService/common/terms.html'),
           _LinkCard(context, 'プライバイシーポリシー',
-              'https://snova301.github.io/AppService/score_counter/privacypolicy.html'),
+              'https://snova301.github.io/AppService/common/privacypolicy.html'),
         ],
       ),
     );
