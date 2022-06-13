@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:score_counter/model/testDataModel.dart';
+import 'package:score_counter/model/testc_dataModel.dart';
 
 class LocalSave {
   /// 設定をshared_preferencesに保存
@@ -79,7 +79,7 @@ class LocalSave {
 
 /// Riverpod StateProvider for setteing
 final settingProvider = StateProvider<Map<String, dynamic>>((ref) => {
-      'darkmode': true,
+      'darkmode': false,
     });
 
 /// 何を選択したかをまとめたProvider

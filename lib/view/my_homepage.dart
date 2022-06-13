@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-import 'package:score_counter/view/testListPage.dart';
-import 'package:score_counter/view/settingPage.dart';
-import 'package:score_counter/view/aboutPage.dart';
+import 'package:score_counter/view/test_list_page.dart';
+import 'package:score_counter/view/setting_page.dart';
+import 'package:score_counter/view/about_page.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);

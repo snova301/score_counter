@@ -9,8 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:score_counter/firebase_options.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-import 'package:score_counter/view/myHomePage.dart';
-import 'package:score_counter/model/stateManager.dart';
+import 'package:score_counter/view/my_homepage.dart';
+import 'package:score_counter/model/state_manager.dart';
 
 /// プラットフォームの確認
 final isAndroid =
@@ -20,25 +20,33 @@ final isIOS = defaultTargetPlatform == TargetPlatform.iOS ? true : false;
 /// メイン
 void main() async {
   /// クラッシュハンドラ
-  runZonedGuarded<Future<void>>(() async {
-    /// Firebaseの初期化
-    WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded<Future<void>>(
+    () async {
+      /// Firebaseの初期化
+      WidgetsFlutterBinding.ensureInitialized();
 
-    await Firebase.initializeApp(
-      name: isAndroid || isIOS ? 'scco' : null,
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+      await Firebase.initializeApp(
+        name: isAndroid || isIOS ? 'scco' : null,
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
-    /// クラッシュハンドラ(Flutterフレームワーク内でスローされたすべてのエラー)
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+      /// クラッシュハンドラ(Flutterフレームワーク内でスローされたすべてのエラー)
+      if (isAndroid || isIOS) {
+        FlutterError.onError =
+            FirebaseCrashlytics.instance.recordFlutterFatalError;
+      }
 
-    /// runApp w/ Riverpod
-    runApp(const ProviderScope(child: MyApp()));
-  },
+      /// runApp w/ Riverpod
+      runApp(const ProviderScope(child: MyApp()));
+    },
 
-      /// クラッシュハンドラ(Flutterフレームワーク内でキャッチされないエラー)
-      (error, stack) =>
-          FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
+    /// クラッシュハンドラ(Flutterフレームワーク内でキャッチされないエラー)
+
+    (error, stack) => {
+      if (isAndroid || isIOS)
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true)
+    },
+  );
 }
 
 /// App settings

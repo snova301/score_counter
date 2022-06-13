@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:score_counter/model/stateManager.dart';
-import 'package:score_counter/view/myHomePage.dart';
+import 'package:score_counter/model/state_manager.dart';
+import 'package:score_counter/view/my_homepage.dart';
 
 class ScoreSetPage extends ConsumerStatefulWidget {
   const ScoreSetPage({Key? key}) : super(key: key);

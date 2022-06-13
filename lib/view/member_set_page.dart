@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-// import 'package:animations/animations.dart';
-
-import 'package:score_counter/model/stateManager.dart';
-import 'package:score_counter/view/myHomePage.dart';
-import 'package:score_counter/view/questionSetPage.dart';
-import 'package:score_counter/view/scoreSetPage.dart';
+import 'package:score_counter/model/state_manager.dart';
+import 'package:score_counter/view/my_homepage.dart';
+import 'package:score_counter/view/question_set_page.dart';
+import 'package:score_counter/view/score_set_page.dart';
 
 class MemberSetPage extends ConsumerStatefulWidget {
   const MemberSetPage({Key? key}) : super(key: key);

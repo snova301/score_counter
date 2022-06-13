@@ -52,3 +52,4 @@ app.*.map.json
 lib/firebase_options.dart
 .firebaserc
 .firebase/
+assets/fonts/

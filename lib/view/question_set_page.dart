@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-
-import 'package:score_counter/model/stateManager.dart';
-import 'package:score_counter/view/myHomePage.dart';
+import 'package:score_counter/model/state_manager.dart';
+import 'package:score_counter/view/my_homepage.dart';
 
 class QuestionSetPage extends ConsumerStatefulWidget {
   const QuestionSetPage({Key? key}) : super(key: key);
