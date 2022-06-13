@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:score_counter/main.dart';
-import 'package:score_counter/model/runClass.dart';
+import 'package:score_counter/model/stateManager.dart';
 import 'package:score_counter/view/MemberSetPage.dart';
 import 'package:score_counter/view/createPage.dart';
 import 'package:score_counter/view/myHomePage.dart';
 import 'package:score_counter/view/questionSetPage.dart';
 
-class TestListPage extends ConsumerWidget {
+class TestListPage extends ConsumerStatefulWidget {
   const TestListPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final _testList = InitListClass().testPageTestlist(ref);
-    final _maxNumOfTest = 5;
+  TestListPageState createState() => TestListPageState();
+}
+
+class TestListPageState extends ConsumerState<TestListPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    /// 初期化
+    final testMap = ref.watch(testMapProvider);
+    const maxNumOfTest = 5;
 
     return Scaffold(
       appBar: AppBar(
@@ -25,16 +35,17 @@ class TestListPage extends ConsumerWidget {
       drawer: DrawerMenu(context),
       body: Column(
         children: [
-          Text('テストの数は$_maxNumOfTestまで'),
-          InfoCard('テスト数', '${_testList.length}  /  $_maxNumOfTest'),
+          /// テストリストの情報
+          Text('テストの数は$maxNumOfTestまで'),
+          InfoCard('テスト数', '${testMap.length}  /  $maxNumOfTest'),
 
           /// テストのリストを表示
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(10),
-              itemCount: _testList.length,
+              itemCount: testMap.length,
               itemBuilder: (context, index) {
-                return _TestCard(context, ref, _testList, index);
+                return _TestCard(context, ref, testMap, index);
               },
             ),
           ),
@@ -47,14 +58,19 @@ class TestListPage extends ConsumerWidget {
         child: const Icon(Icons.add),
         onPressed: () {
           /// テストの数を制限
-          _testList.length < _maxNumOfTest
-              ? Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const CreatePage()))
-              : showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return _addActionPopup(context, _maxNumOfTest);
-                  },
+          testMap.length < maxNumOfTest
+
+              /// テストの数が規定値より小さい場合は作成可能
+              ? Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CreatePage(),
+                  ),
+                )
+
+              /// テスト数が規定値より大きい場合はsnackbarで注意勧告
+              : ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBarAlert('これ以上追加できません。'),
                 );
         },
       ),
@@ -62,16 +78,25 @@ class TestListPage extends ConsumerWidget {
   }
 }
 
+/// テストの名前を表示するCard
 class _TestCard extends Card {
-  _TestCard(BuildContext context, WidgetRef ref, List _testList, int _index)
+  _TestCard(BuildContext context, WidgetRef ref, Map testlistMap, int index)
       : super(
           child: ListTile(
-            title: Text(_testList[_index]),
+            /// テスト名を表示
+            title: Text(testlistMap.values.elementAt(index)['name']),
             contentPadding: const EdgeInsets.all(8),
-            // subtitle: Text(_testList[_index] + _index.toString()),
             onTap: () {
-              ref.read(selectTestNameProvider.state).state = _testList[_index];
-              ref.read(isMemberSetModeProvider.state).state = false;
+              /// どのテストを選択したかを格納
+              ref.read(selectStrMapProvider).update(
+                  'testID', (value) => testlistMap.keys.elementAt(index));
+
+              /// メンバーの設定モードをfalseにする
+              ref
+                  .read(selectBoolMapProvider)
+                  .update('memberSetMode', (value) => false);
+
+              /// テスト作成ページへ移動
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -79,23 +104,27 @@ class _TestCard extends Card {
                 ),
               );
             },
-            trailing: _TestCardPopup(context, ref, _testList, _index),
+
+            /// ポップアップメニューの表示
+            trailing: _TestCardPopup(context, ref, testlistMap, index),
           ),
         );
 }
 
+/// TestCardのポップアップに関するクラス
 class _TestCardPopup extends PopupMenuButton<int> {
   _TestCardPopup(
-      BuildContext context, WidgetRef ref, List _testList, int _index)
+      BuildContext context, WidgetRef ref, Map testlistMap, int index)
       : super(
+          /// ポップアップメニューアイコン
           icon: const Icon(Icons.more_vert),
           itemBuilder: (BuildContext context) => [
             PopupMenuItem(
               value: 0,
               child: Row(
                 children: const <Widget>[
-                  Icon(Icons.note_alt_outlined),
-                  Text(' 設問設定'),
+                  Icon(Icons.people),
+                  Text(' メンバー設定'),
                 ],
               ),
             ),
@@ -103,8 +132,8 @@ class _TestCardPopup extends PopupMenuButton<int> {
               value: 1,
               child: Row(
                 children: const <Widget>[
-                  Icon(Icons.people),
-                  Text(' メンバー設定'),
+                  Icon(Icons.note_alt_outlined),
+                  Text(' 設問設定'),
                 ],
               ),
             ),
@@ -126,41 +155,60 @@ class _TestCardPopup extends PopupMenuButton<int> {
             ),
           ],
           onSelected: (int val) {
+            /// どのテストを選択したかの設定
+            ref
+                .read(selectStrMapProvider)
+                .update('testID', (value) => testlistMap.keys.elementAt(index));
+
+            /// 設問の設定
             if (val == 0) {
-              ref.read(selectTestNameProvider.state).state = _testList[_index];
-              ref.read(isUpdateQuestionProvider.state).state = true;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const QuestionSetPage(),
-                ),
-              );
-            } else if (val == 1) {
-              ref.read(selectTestNameProvider.state).state = _testList[_index];
-              ref.read(isMemberSetModeProvider.state).state = true;
+              /// 設定モードの変更
+              ref
+                  .read(selectBoolMapProvider)
+                  .update('memberSetMode', (value) => true);
+              ref
+                  .read(selectBoolMapProvider)
+                  .update('updateMemberSetMode', (value) => true);
+
+              /// ページ遷移
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const MemberSetPage(),
                 ),
               );
-            } else if (val == 2) {
-              RunClassTestList().removeTestListCard(ref, _testList, _index);
+            }
+
+            /// メンバーの設定
+            else if (val == 1) {
+              /// 設定モードの変更
+              ref
+                  .read(selectBoolMapProvider)
+                  .update('updateQuestionSetMode', (value) => true);
+
+              /// ページ遷移
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const QuestionSetPage(),
+                ),
+              );
+            }
+
+            /// テストを削除
+            else if (val == 2) {
+              /// IDを取得
+              final deleteID = testlistMap.keys.elementAt(index);
+
+              /// testMapから削除
+              ref.read(testMapProvider.notifier).delete(deleteID);
+
+              /// DBから削除
+              ref.read(testDBProvider.notifier).deleteTest(deleteID);
+
+              /// shared_preferencesに書き込み
+              LocalSave().setData(ref);
             }
           },
-        );
-}
-
-class _addActionPopup extends AlertDialog {
-  _addActionPopup(BuildContext context, int _maxNumOfTest)
-      : super(
-          title: const Text('注意'),
-          content: Text('テスト数は' + _maxNumOfTest.toString() + 'までです。'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
-            ),
-          ],
         );
 }

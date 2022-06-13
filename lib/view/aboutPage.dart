@@ -40,7 +40,7 @@ class _LinkCard extends Card {
           child: ListTile(
             title: Text(urlTitle),
             subtitle: Text('タップすると、' + urlTitle + 'のwebページへ移動します。'),
-            contentPadding: EdgeInsets.all(10),
+            contentPadding: const EdgeInsets.all(10),
             onTap: () => _launchUrl(urlName),
             trailing: const Icon(Icons.open_in_browser),
           ),

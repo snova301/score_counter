@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:score_counter/model/stateManager.dart';
-import '/main.dart';
 
 class SettingPage extends ConsumerWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -15,54 +14,56 @@ class SettingPage extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(10),
         children: <Widget>[
-          _darkmodeCard(context, ref),
-          _dataRemoveCard(context, ref),
+          _DarkmodeCard(context, ref),
+          _DataRemoveCard(context, ref),
         ],
       ),
     );
   }
 }
 
-class _darkmodeCard extends Card {
-  _darkmodeCard(BuildContext context, WidgetRef ref)
+class _DarkmodeCard extends Card {
+  _DarkmodeCard(BuildContext context, WidgetRef ref)
       : super(
           child: SwitchListTile(
             title: const Text('ダークモード'),
-            value: ref.watch(darkmodeProvider),
-            contentPadding: EdgeInsets.all(10),
+            value: ref.watch(settingProvider)['darkmode'],
+            contentPadding: const EdgeInsets.all(10),
             secondary: const Icon(Icons.dark_mode_outlined),
             onChanged: (bool value) {
-              ref.read(darkmodeProvider.state).state = value;
-              StateManagerClass().setDarkmodeVal(ref);
+              Map temp = ref.read(settingProvider);
+              temp['darkmode'] = value;
+              ref.read(settingProvider.state).state = {...temp};
+              LocalSave().setPref(ref);
             },
           ),
         );
 }
 
-class _dataRemoveCard extends Card {
-  _dataRemoveCard(BuildContext context, WidgetRef ref)
+class _DataRemoveCard extends Card {
+  _DataRemoveCard(BuildContext context, WidgetRef ref)
       : super(
           child: ListTile(
             title: const Text('採点データを削除'),
             textColor: Colors.red,
             iconColor: Colors.red,
-            contentPadding: EdgeInsets.all(10),
+            contentPadding: const EdgeInsets.all(10),
             leading: const Icon(Icons.delete_outline),
             onTap: () {
               showDialog<String>(
                   context: context,
                   builder: (BuildContext context) =>
-                      _dataRemoveDialog(context, ref));
+                      _DataRemoveDialog(context, ref));
             },
           ),
         );
 }
 
-class _dataRemoveDialog extends AlertDialog {
-  _dataRemoveDialog(BuildContext context, WidgetRef ref)
+class _DataRemoveDialog extends AlertDialog {
+  _DataRemoveDialog(BuildContext context, WidgetRef ref)
       : super(
           title: const Text('注意'),
-          content: const Text('すべての採点データが削除されます。\n(すでにエクスポートされたデータは削除されません。)'),
+          content: const Text('すべての採点データが削除されます'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),
@@ -71,12 +72,14 @@ class _dataRemoveDialog extends AlertDialog {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                /// shared_prefのデータを削除
-                StateManagerClass().removeTestModel(ref);
+                /// providerのデータ削除
+                ref.read(testDBProvider.notifier).deleteAll();
+                ref.read(testMapProvider.notifier).deleteAll();
+                ref.read(memberMapProvider.notifier).deleteAll();
+                ref.read(questionMapProvider.notifier).deleteAll();
 
-                /// Listデータの削除
-                ref.read(testDataStoreProvider).clear();
-                ref.read(testListProvider).clear();
+                /// shared_prefのデータを削除
+                LocalSave().deleteData(ref);
 
                 /// 戻る
                 Navigator.pop(context);

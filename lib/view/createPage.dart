@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
-import 'package:score_counter/main.dart';
-import 'package:score_counter/model/runClass.dart';
-import 'package:score_counter/view/questionSetPage.dart';
+import 'package:score_counter/model/stateManager.dart';
+import 'package:score_counter/view/memberSetPage.dart';
 
 class CreatePage extends ConsumerWidget {
   const CreatePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textController = ref.watch(testNameControllerProvider);
+    /// 初期化
+    final textController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -19,7 +20,10 @@ class CreatePage extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(30),
         children: <Widget>[
-          _TextFieldContainer(context, ref, textController),
+          /// 入力フォームwidget
+          _TextFieldContainer(context, textController),
+
+          /// 次へボタン
           _NextButton(context, ref, textController),
         ],
       ),
@@ -27,18 +31,24 @@ class CreatePage extends ConsumerWidget {
   }
 }
 
+/// 入力フォームwidget
 class _TextFieldContainer extends Container {
-  _TextFieldContainer(BuildContext context, ref, _controller)
+  _TextFieldContainer(BuildContext context, controller)
       : super(
             child: TextField(
-          controller: _controller,
+          controller: controller,
           autofocus: true,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: 'テスト名',
+          ),
         ));
 }
 
+/// 次へボタン
 class _NextButton extends Align {
   _NextButton(
-      BuildContext context, WidgetRef ref, TextEditingController _controller)
+      BuildContext context, WidgetRef ref, TextEditingController controller)
       : super(
           child: Container(
             padding: const EdgeInsets.all(20),
@@ -50,41 +60,38 @@ class _NextButton extends Align {
                 child: const Text('次  へ'),
               ),
               onPressed: () {
-                // テスト名が空欄の場合や重複の場合にAlertを出力
-                (_controller.text == '' ||
-                        RunClassWhole().isTestNameDuplicate(ref))
-                    ? showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return _NextButtonDialog(context);
-                        },
-                      )
-                    : {
-                        RunClassWhole().createSelectTestName(ref),
-                        ref.read(isUpdateQuestionProvider.state).state = false,
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const QuestionSetPage(),
-                          ),
-                        ),
-                      };
+                /// IDと名前の取得
+                String testID = const Uuid().v4();
+                String testName = controller.text;
+
+                /// 選択Mapへの保存
+                ref.read(selectStrMapProvider.state).state['testID'] = testID;
+
+                /// テストリストにデータを渡す
+                ref.read(testMapProvider.notifier).create(testID, testName);
+
+                /// メンバー設定モードをtrue、メンバー設定更新モードをfalse
+                ref
+                    .read(selectBoolMapProvider)
+                    .update('memberSetMode', (value) => true);
+                ref
+                    .read(selectBoolMapProvider)
+                    .update('updateMemberSetMode', (value) => false);
+
+                /// shared_preferencesに書き込み
+                LocalSave().setData(ref);
+
+                /// 画面遷移
+                /// providerのautodisposeのため、前画面に一度戻って進む
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MemberSetPage(),
+                  ),
+                );
               },
             ),
           ),
-        );
-}
-
-class _NextButtonDialog extends AlertDialog {
-  _NextButtonDialog(BuildContext context)
-      : super(
-          title: const Text('注意'),
-          content: const Text('テスト名が空欄または重複しています。\n入力内容を確認してください。'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
-            ),
-          ],
         );
 }

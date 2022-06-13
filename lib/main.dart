@@ -41,34 +41,6 @@ void main() async {
           FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
 }
 
-/// Riverpod StateProvider for setteing
-final StateManager = StateManagerClass();
-final darkmodeProvider = StateManager.darkmodeStateProvider;
-
-/// Riverpod StateProvider for textcontroller
-final testNameControllerProvider = StateManager.testNameControllerStateProvider;
-
-/// Riverpod StateProvider for list
-final testListProvider = StateManager.testListStateProvider;
-final questionListProvider = StateManager.questionListStateProvider;
-final memberListProvider = StateManager.memberListStateProvider;
-final pointListProvider = StateManager.pointListStateProvider;
-final scoreListProvider = StateManager.scoreListStateProvider;
-
-/// Riverpod StateProvider for select
-final selectTestNameProvider = StateManager.selectTestNameStateProvider;
-final selectQuestionProvider = StateManager.selectQuestionStateProvider;
-final selectMemberProvider = StateManager.selectMemberStateProvider;
-final selectPointProvider = StateManager.selectPointStateProvider;
-
-/// Riverpod StateProvider for data
-final isUpdateQuestionProvider = StateManager.isUpdateQuestionStateProvider;
-final isMemberSetModeProvider = StateManager.isMemberSetModeStateProvider;
-
-/// Riverpod StateProvider for data
-final testDataStoreProvider = StateManager.testDataStoreStateProvider;
-final pointSumProvider = StateManager.pointSumStateProvider;
-
 /// App settings
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -81,13 +53,15 @@ class MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
-    StateManagerClass().getDarkmodeVal(ref);
-    StateManagerClass().getTestModel(ref);
+
+    /// shared_prefのデータを取得
+    LocalSave().getPref(ref);
+    LocalSave().getData(ref);
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDarkmode = ref.watch(darkmodeProvider);
+    final isDarkmode = ref.watch(settingProvider)['darkmode'];
 
     return MaterialApp(
       title: '採点カウンター SCCO (β)',
@@ -97,13 +71,13 @@ class MyAppState extends ConsumerState<MyApp> {
         primarySwatch: Colors.teal,
         fontFamily: 'NotoSansJP',
       ),
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale('ja', ''),
+      supportedLocales: const [
+        Locale('ja', ''),
       ],
       debugShowCheckedModeBanner: false,
     );

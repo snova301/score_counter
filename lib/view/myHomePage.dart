@@ -28,9 +28,9 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.all(30),
+                  padding: const EdgeInsets.all(30),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                     child: Image.asset('images/image.png',
                         width: 100, height: 100),
                   ),
@@ -141,18 +141,38 @@ class DrawerMenu extends Drawer {
 }
 
 class InfoCard extends Card {
-  InfoCard(String _title, String _num)
+  InfoCard(String title, String num)
       : super(
+          elevation: 3,
           child: Container(
             // width: MediaQuery.of(context).size.width * 0.5,
             padding: const EdgeInsets.all(10),
             margin: const EdgeInsets.all(10),
             child: Column(
               children: [
-                Text(_title),
-                Text(_num),
+                Text(
+                  title,
+                  style: const TextStyle(),
+                ),
+                Text(
+                  num,
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
               ],
             ),
+          ),
+        );
+}
+
+class SnackBarAlert extends SnackBar {
+  SnackBarAlert(String title)
+      : super(
+          content: Text(title),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
           ),
         );
 }
