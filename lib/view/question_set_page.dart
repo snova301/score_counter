@@ -53,7 +53,8 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
           /// リスト
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 30),
+              // padding: const EdgeInsets.all(8),
               itemCount: questionMap.length,
               itemBuilder: (context, index) {
                 return _QuestionCard(context, ref, questionMap, index);
@@ -103,14 +104,15 @@ class _QuestionCard extends Card {
             contentPadding: const EdgeInsets.all(8),
 
             /// ポップアップメニュー
-            trailing: _QuestionCardPopup(context, ref, index),
+            trailing: _QuestionCardPopup(context, ref, questionMap, index),
           ),
         );
 }
 
 /// Question Cardのポップアップ
 class _QuestionCardPopup extends PopupMenuButton<int> {
-  _QuestionCardPopup(BuildContext context, WidgetRef ref, int index)
+  _QuestionCardPopup(
+      BuildContext context, WidgetRef ref, Map questionMap, int index)
       : super(
           icon: const Icon(Icons.more_vert),
           itemBuilder: (BuildContext context) => [
@@ -137,8 +139,7 @@ class _QuestionCardPopup extends PopupMenuButton<int> {
               /// データ取得
               final testID = ref.read(selectStrMapProvider)['testID']!;
               final memberMap = ref.read(memberMapProvider);
-              final questionID =
-                  ref.read(questionMapProvider).keys.elementAt(index);
+              final questionID = questionMap.keys.elementAt(index);
 
               /// questionMapから削除
               ref.read(questionMapProvider.notifier).delete(questionID);

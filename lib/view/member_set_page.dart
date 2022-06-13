@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+
 import 'package:score_counter/model/state_manager.dart';
 import 'package:score_counter/view/my_homepage.dart';
 import 'package:score_counter/view/question_set_page.dart';
@@ -43,7 +44,8 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
           /// リスト
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 30),
+              // padding: const EdgeInsets.all(8),
               itemCount: memberMap.length,
               itemBuilder: (context, index) {
                 return _MemberCard(context, ref, memberMap, index, isSetMode);
@@ -114,7 +116,9 @@ class _MemberCard extends Card {
             contentPadding: const EdgeInsets.all(8),
 
             /// ポップアップメニュー
-            trailing: isSetMode ? _MemberCardPopup(context, ref, index) : null,
+            trailing: isSetMode
+                ? _MemberCardPopup(context, ref, memberMap, index)
+                : null,
             onTap: () {
               isSetMode
                   ? null
@@ -159,7 +163,8 @@ class _MemberCard extends Card {
 
 /// メンバーCardのポップアップメニュー
 class _MemberCardPopup extends PopupMenuButton<int> {
-  _MemberCardPopup(BuildContext context, WidgetRef ref, int index)
+  _MemberCardPopup(
+      BuildContext context, WidgetRef ref, Map memberMap, int index)
       : super(
           icon: const Icon(Icons.more_vert),
           itemBuilder: (BuildContext context) => [

@@ -24,6 +24,8 @@ class AboutPageState extends ConsumerState<AboutPage> {
       body: ListView(
         padding: const EdgeInsets.all(10),
         children: <Widget>[
+          _LinkCard(context, '使用方法',
+              'https://snova301.github.io/AppService/score_counter/home.html#使い方'),
           _LinkCard(context, '利用規約',
               'https://snova301.github.io/AppService/common/terms.html'),
           _LinkCard(context, 'プライバイシーポリシー',
@@ -48,7 +50,7 @@ class _LinkCard extends Card {
 }
 
 void _launchUrl(urlname) async {
-  final Uri _url = Uri.parse(urlname);
-  if (!await launchUrl(_url, mode: LaunchMode.externalApplication))
-    throw 'Could not launch $_url';
+  final Uri url = Uri.parse(urlname);
+  if (!await launchUrl(url, mode: LaunchMode.externalApplication))
+    throw 'Could not launch $url';
 }

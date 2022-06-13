@@ -26,7 +26,7 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
 
       await Firebase.initializeApp(
-        name: isAndroid || isIOS ? 'scco' : null,
+        // name: isAndroid || isIOS ? 'scco' : null,
         options: DefaultFirebaseOptions.currentPlatform,
       );
 
@@ -72,11 +72,13 @@ class MyAppState extends ConsumerState<MyApp> {
     final isDarkmode = ref.watch(settingProvider)['darkmode'];
 
     return MaterialApp(
-      title: '採点カウンター SCCO (β)',
+      title: '採点カウンター SCCO',
       home: const MyHomePage(),
       theme: ThemeData(
+        useMaterial3: true,
         brightness: isDarkmode ? Brightness.dark : Brightness.light,
-        primarySwatch: Colors.teal,
+        colorSchemeSeed: Colors.blue,
+        // primarySwatch: Colors.blue,
         fontFamily: 'NotoSansJP',
       ),
       localizationsDelegates: const [

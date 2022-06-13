@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:score_counter/model/state_manager.dart';
-import 'package:score_counter/view/MemberSetPage.dart';
+import 'package:score_counter/view/member_set_page.dart';
 import 'package:score_counter/view/create_page.dart';
 import 'package:score_counter/view/my_homepage.dart';
 import 'package:score_counter/view/question_set_page.dart';
@@ -42,7 +42,8 @@ class TestListPageState extends ConsumerState<TestListPage> {
           /// テストのリストを表示
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 30),
+              // padding: const EdgeInsets.all(10),
               itemCount: testMap.length,
               itemBuilder: (context, index) {
                 return _TestCard(context, ref, testMap, index);

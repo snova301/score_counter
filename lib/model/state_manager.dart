@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:score_counter/model/testc_dataModel.dart';
+import 'package:score_counter/model/testdata_model.dart';
 
 class LocalSave {
   /// 設定をshared_preferencesに保存
@@ -206,7 +206,7 @@ class TestDBNotifier extends StateNotifier<Map> {
   /// メンバーを削除
   void deleteMember(String testID, String memberID) {
     Map temp = state;
-    if (state.isNotEmpty) {
+    if (temp.isNotEmpty) {
       Map membertemp = temp[testID];
       membertemp.remove(memberID);
       temp[testID] = {...membertemp};
@@ -217,7 +217,7 @@ class TestDBNotifier extends StateNotifier<Map> {
   /// 設問を削除
   void deleteQuestion(String testID, Map memberMap, String questionID) {
     Map temp = state;
-    if (state.isNotEmpty) {
+    if (temp.isNotEmpty) {
       Map membertemp = temp[testID];
       late Map questiontemp;
       memberMap.forEach((memberID, value) {
@@ -280,7 +280,7 @@ class TestMapNotifier extends StateNotifier<Map> {
   void delete(String testID) {
     try {
       var temp = state;
-      state.remove(testID);
+      temp.remove(testID);
       state = {...temp};
     } catch (e) {
       // print(e);
@@ -325,8 +325,8 @@ class MemberMapNotifier extends StateNotifier<Map> {
   /// メンバーの削除
   void delete(String memberID) {
     try {
-      var temp = state;
-      state.remove(memberID);
+      Map temp = state;
+      temp.remove(memberID);
       state = {...temp};
       // print(state);
     } catch (e) {
@@ -374,8 +374,8 @@ class QuestionMapNotifier extends StateNotifier<Map> {
   /// 設問の削除
   void delete(String questionID) {
     try {
-      var temp = state;
-      state.remove(questionID);
+      Map temp = state;
+      temp.remove(questionID);
       state = {...temp};
     } catch (e) {
       // print(e);

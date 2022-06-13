@@ -18,7 +18,7 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('採点カウンター SCCO (β)'),
+        title: const Text('採点カウンター SCCO'),
       ),
       drawer: DrawerMenu(context),
       body: Column(
@@ -31,7 +31,7 @@ class MyHomePageState extends ConsumerState<MyHomePage> {
                   padding: const EdgeInsets.all(30),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    child: Image.asset('images/image.png',
+                    child: Image.asset('assets/images/image.png',
                         width: 100, height: 100),
                   ),
                 ),
@@ -174,6 +174,7 @@ class SnackBarAlert extends SnackBar {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
+          duration: const Duration(milliseconds: 2000),
         );
 }
 
