@@ -190,8 +190,7 @@ class _MemberCardPopup extends PopupMenuButton<int> {
             if (val == 0) {
               /// データ取得
               final testID = ref.watch(selectStrMapProvider)['testID']!;
-              final memberID =
-                  ref.watch(memberMapProvider).keys.elementAt(index);
+              final memberID = memberMap.keys.elementAt(index);
 
               /// memberMapから削除
               ref.read(memberMapProvider.notifier).delete(memberID);

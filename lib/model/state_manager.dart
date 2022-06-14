@@ -328,10 +328,16 @@ class MemberMapNotifier extends StateNotifier<Map> {
       Map temp = state;
       temp.remove(memberID);
       state = {...temp};
-      // print(state);
     } catch (e) {
       // print(e);
     }
+  }
+
+  /// テストを削除したときにメンバーも削除
+  void deleteTest(String testID) {
+    Map temp = state;
+    temp.removeWhere((key, value) => value['testID'] == testID);
+    state = {...temp};
   }
 
   /// すべて削除
@@ -380,6 +386,13 @@ class QuestionMapNotifier extends StateNotifier<Map> {
     } catch (e) {
       // print(e);
     }
+  }
+
+  /// テストを削除したときに質問も削除
+  void deleteTest(String testID) {
+    Map temp = state;
+    temp.removeWhere((key, value) => value['testID'] == testID);
+    state = {...temp};
   }
 
   /// すべて削除

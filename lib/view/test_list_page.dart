@@ -201,8 +201,10 @@ class _TestCardPopup extends PopupMenuButton<int> {
               /// IDを取得
               final deleteID = testlistMap.keys.elementAt(index);
 
-              /// testMapから削除
+              /// testMap, memberMap, questionMapから削除
               ref.read(testMapProvider.notifier).delete(deleteID);
+              ref.read(memberMapProvider.notifier).deleteTest(deleteID);
+              ref.read(questionMapProvider.notifier).deleteTest(deleteID);
 
               /// DBから削除
               ref.read(testDBProvider.notifier).deleteTest(deleteID);
