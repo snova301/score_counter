@@ -53,3 +53,10 @@ lib/firebase_options.dart
 .firebaserc
 .firebase/
 assets/fonts/
+android
+ios
+linux
+macos
+windows
+web
+firebase.json
