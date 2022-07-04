@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:score_counter/src/view/common.dart';
 import 'package:uuid/uuid.dart';
-import 'package:score_counter/model/state_manager.dart';
-import 'package:score_counter/view/my_homepage.dart';
+import 'package:score_counter/src/model/state_manager.dart';
 
 class QuestionSetPage extends ConsumerStatefulWidget {
   const QuestionSetPage({Key? key}) : super(key: key);
@@ -39,14 +39,16 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
       body: Column(
         children: [
           /// 注意喚起
-          Text('設問は $maxNumOfQuestion 問まで'),
+          const Text('設問は $maxNumOfQuestion 問まで'),
 
           /// 情報
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              InfoCard('問題数', '${questionMap.length}  /  $maxNumOfQuestion'),
-              InfoCard('合計点', '$pointSum'),
+              InfoCard(
+                  title: '問題数',
+                  num: '${questionMap.length}  /  $maxNumOfQuestion'),
+              InfoCard(title: '合計点', num: '$pointSum'),
             ],
           ),
 
@@ -81,9 +83,10 @@ class QuestionSetPageState extends ConsumerState<QuestionSetPage> {
 
           /// 最大数を超える場合、snackbarで注意
           else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBarAlert('これ以上追加できません。'),
-            );
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBarAlert('これ以上追加できません。'),
+            // );
+            SnackBarAlert(context: context).snackbar('これ以上追加できません');
           }
         },
       ),
@@ -208,7 +211,7 @@ class _AddDialog extends AlertDialog {
               onPressed: () {
                 /// データ取得
                 String testID = ref.watch(selectStrMapProvider)['testID']!;
-                Map _memberMap = ref.read(memberMapProvider);
+                Map memberMap = ref.read(memberMapProvider);
                 String questionID = const Uuid().v4();
 
                 /// 質問名の決定
@@ -227,7 +230,7 @@ class _AddDialog extends AlertDialog {
                   /// DBへ書込み
                   ref
                       .read(testDBProvider.notifier)
-                      .createQuestion(testID, _memberMap, questionID);
+                      .createQuestion(testID, memberMap, questionID);
 
                   /// shared_preferencesに書き込み
                   LocalSave().setData(ref);
@@ -235,10 +238,8 @@ class _AddDialog extends AlertDialog {
                   /// もとの画面に戻る
                   Navigator.pop(context);
                 } catch (e) {
-                  // print(e);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBarAlert('有効な数値を入力してください'),
-                  );
+                  /// snackbarで警告
+                  SnackBarAlert(context: context).snackbar('有効な数値を入力してください');
                 }
               },
             ),

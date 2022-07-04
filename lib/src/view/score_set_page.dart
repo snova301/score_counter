@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:score_counter/model/state_manager.dart';
-import 'package:score_counter/view/my_homepage.dart';
+import 'package:score_counter/src/model/state_manager.dart';
+import 'package:score_counter/src/view/common.dart';
 
 class ScoreSetPage extends ConsumerStatefulWidget {
   const ScoreSetPage({Key? key}) : super(key: key);
@@ -33,8 +33,8 @@ class ScoreSetPageState extends ConsumerState<ScoreSetPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              InfoCard('問題数', questionMap.length.toString()),
-              InfoCard('得点  /  全体点', '$scoreSum  /  $pointSum'),
+              InfoCard(title: '問題数', num: questionMap.length.toString()),
+              InfoCard(title: '得点  /  全体点', num: '$scoreSum  /  $pointSum'),
             ],
           ),
 

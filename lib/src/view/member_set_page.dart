@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:score_counter/src/view/common.dart';
 import 'package:uuid/uuid.dart';
-
-import 'package:score_counter/model/state_manager.dart';
-import 'package:score_counter/view/my_homepage.dart';
-import 'package:score_counter/view/question_set_page.dart';
-import 'package:score_counter/view/score_set_page.dart';
+import 'package:score_counter/src/model/state_manager.dart';
+import 'package:score_counter/src/view/question_set_page.dart';
+import 'package:score_counter/src/view/score_set_page.dart';
 
 class MemberSetPage extends ConsumerStatefulWidget {
   const MemberSetPage({Key? key}) : super(key: key);
@@ -38,8 +37,8 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
       body: Column(
         children: [
           /// 情報
-          Text('メンバーは $maxNumOfMember 人まで'),
-          InfoCard('人数', '${memberMap.length}  /  $maxNumOfMember'),
+          const Text('メンバーは $maxNumOfMember 人まで'),
+          InfoCard(title: '人数', num: '${memberMap.length}  /  $maxNumOfMember'),
 
           /// リスト
           Expanded(
@@ -70,7 +69,7 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
                   /// データの取得とIDの取得
                   String testID = ref.watch(selectStrMapProvider)['testID']!;
                   String memberID = const Uuid().v4();
-                  Map _questionMap = ref.read(questionMapProvider);
+                  Map questionMap = ref.read(questionMapProvider);
 
                   /// メンバーの名前
                   String memberName = 'メンバー ${memberMap.length + 1}';
@@ -83,7 +82,7 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
                   /// DBに登録
                   ref
                       .read(testDBProvider.notifier)
-                      .createMember(testID, memberID, _questionMap);
+                      .createMember(testID, memberID, questionMap);
 
                   /// shared_preferencesに書き込み
                   LocalSave().setData(ref);
@@ -91,9 +90,7 @@ class MemberSetPageState extends ConsumerState<MemberSetPage> {
 
                 /// メンバーが最大数を超えているとき
                 else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBarAlert('これ以上追加できません。'),
-                  );
+                  SnackBarAlert(context: context).snackbar('これ以上追加できません');
                 }
               },
               tooltip: 'メンバー追加',

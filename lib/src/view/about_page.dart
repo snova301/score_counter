@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:score_counter/src/view/common.dart';
 
 class AboutPage extends ConsumerStatefulWidget {
   const AboutPage({Key? key}) : super(key: key);
@@ -30,6 +30,26 @@ class AboutPageState extends ConsumerState<AboutPage> {
               'https://snova301.github.io/AppService/common/terms.html'),
           _LinkCard(context, 'プライバイシーポリシー',
               'https://snova301.github.io/AppService/common/privacypolicy.html'),
+
+          /// お問い合わせフォーム
+          Card(
+            child: ListTile(
+              title: const Text('お問い合わせ'),
+              contentPadding: const EdgeInsets.all(10),
+              onTap: () => openUrl('https://forms.gle/yBGDikXqZzWjco7z8'),
+              trailing: const Icon(Icons.open_in_browser),
+            ),
+          ),
+
+          /// オープンソースライセンスの表示
+          Card(
+            child: ListTile(
+              title: const Text('オープンソースライセンス'),
+              onTap: () {
+                showLicensePage(context: context);
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -41,16 +61,10 @@ class _LinkCard extends Card {
       : super(
           child: ListTile(
             title: Text(urlTitle),
-            subtitle: Text('タップすると、' + urlTitle + 'のwebページへ移動します。'),
+            subtitle: Text('タップすると、$urlTitleのwebページへ移動します。'),
             contentPadding: const EdgeInsets.all(10),
-            onTap: () => _launchUrl(urlName),
+            onTap: () => openUrl(urlName),
             trailing: const Icon(Icons.open_in_browser),
           ),
         );
-}
-
-void _launchUrl(urlname) async {
-  final Uri url = Uri.parse(urlname);
-  if (!await launchUrl(url, mode: LaunchMode.externalApplication))
-    throw 'Could not launch $url';
 }

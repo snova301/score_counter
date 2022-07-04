@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:score_counter/model/state_manager.dart';
-import 'package:score_counter/view/member_set_page.dart';
+import 'package:score_counter/src/model/state_manager.dart';
+import 'package:score_counter/src/view/member_set_page.dart';
 
 class CreatePage extends ConsumerWidget {
   const CreatePage({Key? key}) : super(key: key);

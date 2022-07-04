@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:score_counter/model/state_manager.dart';
-import 'package:score_counter/view/member_set_page.dart';
-import 'package:score_counter/view/create_page.dart';
-import 'package:score_counter/view/my_homepage.dart';
-import 'package:score_counter/view/question_set_page.dart';
+import 'package:score_counter/src/model/state_manager.dart';
+import 'package:score_counter/src/view/common.dart';
+import 'package:score_counter/src/view/member_set_page.dart';
+import 'package:score_counter/src/view/create_page.dart';
+import 'package:score_counter/src/view/question_set_page.dart';
 
 class TestListPage extends ConsumerStatefulWidget {
   const TestListPage({Key? key}) : super(key: key);
@@ -32,12 +31,12 @@ class TestListPageState extends ConsumerState<TestListPage> {
       ),
 
       /// drawer
-      drawer: DrawerMenu(context),
+      drawer: const DrawerMenu(),
       body: Column(
         children: [
           /// テストリストの情報
-          Text('テストの数は$maxNumOfTestまで'),
-          InfoCard('テスト数', '${testMap.length}  /  $maxNumOfTest'),
+          const Text('テストの数は$maxNumOfTestまで'),
+          InfoCard(title: 'テスト数', num: '${testMap.length}  /  $maxNumOfTest'),
 
           /// テストのリストを表示
           Expanded(
@@ -70,9 +69,7 @@ class TestListPageState extends ConsumerState<TestListPage> {
                 )
 
               /// テスト数が規定値より大きい場合はsnackbarで注意勧告
-              : ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBarAlert('これ以上追加できません。'),
-                );
+              : SnackBarAlert(context: context).snackbar('これ以上追加できません');
         },
       ),
     );

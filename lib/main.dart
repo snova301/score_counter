@@ -9,8 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:score_counter/firebase_options.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-import 'package:score_counter/view/my_homepage.dart';
-import 'package:score_counter/model/state_manager.dart';
+import 'package:score_counter/src/view/my_homepage.dart';
+import 'package:score_counter/src/model/state_manager.dart';
 
 /// プラットフォームの確認
 final isAndroid =

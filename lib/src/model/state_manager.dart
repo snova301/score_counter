@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:score_counter/model/testdata_model.dart';
+import 'package:score_counter/src/model/testdata_model.dart';
 
 class LocalSave {
   /// 設定をshared_preferencesに保存
